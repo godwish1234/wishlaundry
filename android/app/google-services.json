@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "983511242166",
+    "project_id": "wish-laundry-1b532",
+    "storage_bucket": "wish-laundry-1b532.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983511242166:android:752610e006a375d6d6dd17",
+        "android_client_info": {
+          "package_name": "com.example.wishlaundry"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbglQsmmuHkqfZesR1Mdfe6RTay0XjldU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
