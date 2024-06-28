@@ -33,5 +33,6 @@
   "password": "Kata Sandi",
   "submit": "Kirim",
   "login_validation": "Alamat email/Kata sandi salah",
-  "add": "Tambah"
+  "add": "Tambah",
+  "search": "Cari"
 }

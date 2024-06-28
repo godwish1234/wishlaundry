@@ -36,5 +36,6 @@ abstract class  LocaleKeys {
   static const submit = 'submit';
   static const login_validation = 'login_validation';
   static const add = 'add';
+  static const search = 'search';
 
 }

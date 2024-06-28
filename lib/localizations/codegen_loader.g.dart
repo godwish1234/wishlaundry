@@ -49,7 +49,8 @@ class CodegenLoader extends AssetLoader{
   "password": "Kata Sandi",
   "submit": "Kirim",
   "login_validation": "Alamat email/Kata sandi salah",
-  "add": "Tambah"
+  "add": "Tambah",
+  "search": "Cari"
 };
 static const Map<String,dynamic> en_US = {
   "home_nav": "Home",
@@ -86,7 +87,8 @@ static const Map<String,dynamic> en_US = {
   "password": "Password",
   "submit": "Submit",
   "login_validation": "Wrong email/password",
-  "add": "Add"
+  "add": "Add",
+  "search": "Search"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"id_ID": id_ID, "en_US": en_US};
 }

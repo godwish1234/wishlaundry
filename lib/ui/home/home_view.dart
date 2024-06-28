@@ -3,7 +3,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:grouped_list/grouped_list.dart';
 import 'package:stacked/stacked.dart';
+import 'package:wishlaundry/components/my_text_field.dart';
 import 'package:wishlaundry/constants/admins.dart';
 import 'package:wishlaundry/helpers/helper.dart';
 import 'package:wishlaundry/localizations/locale_keys.g.dart';
@@ -34,12 +36,73 @@ class _HomeViewState extends State<HomeView> {
   final TextEditingController socksTextController = TextEditingController();
   final TextEditingController othersTextController = TextEditingController();
 
+  final TextEditingController _searchController = TextEditingController();
+
   // firestore
   final FirestoreServiceImpl firestoreService = FirestoreServiceImpl();
 
   final _formKey = GlobalKey<FormState>();
 
   int? attempts;
+
+  List _allResults = [];
+  List _resultList = [];
+
+  @override
+  void initState() {
+    getClientStream();
+    _searchController.addListener(_onSearchChanged);
+    super.initState();
+  }
+
+  _onSearchChanged() {
+    print(_searchController.text);
+
+    searchResultList();
+  }
+
+  searchResultList() {
+    var showResult = [];
+    if (_searchController.text != '') {
+      for (var clientSnapShot in _allResults) {
+        var name = clientSnapShot['name'].toString().toLowerCase();
+        if (name.contains(_searchController.text.toLowerCase())) {
+          showResult.add(clientSnapShot);
+        }
+      }
+    } else {
+      showResult = List.from(_allResults);
+    }
+
+    setState(() {
+      _resultList = showResult;
+    });
+  }
+
+  getClientStream() async {
+    var data = await FirebaseFirestore.instance
+        .collection('transaction')
+        .orderBy('date', descending: true)
+        .get();
+
+    setState(() {
+      _allResults = data.docs;
+    });
+    searchResultList();
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    getClientStream();
+    super.didChangeDependencies();
+  }
 
   void validateAndSave(String? docId, Map<String, dynamic>? data,
       String? username, bool? forced) {
@@ -616,60 +679,98 @@ class _HomeViewState extends State<HomeView> {
                 },
                 child: const Icon(Icons.add),
               ),
-              body: StreamBuilder<QuerySnapshot>(
-                stream: firestoreService.getNotesStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List notesList = snapshot.data!.docs;
+              body: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MyTextField(
+                      onChanged: (() {
+                        // validateEmail(emailController.text);
+                      }),
+                      controller: _searchController,
+                      hintText: LocaleKeys.search.tr(),
+                      obscureText: false,
+                      prefixIcon: const Icon(Icons.search_outlined),
+                    ),
+                  ),
+                  Expanded(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: firestoreService.getNotesStream(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          getClientStream();
 
-                    //display as a list
-                    return ListView.builder(
-                        itemCount: notesList.length,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot document = notesList[index];
-                          String docID = document.id;
+                          //display as a list
+                          return GroupedListView(
+                              elements: _resultList,
+                              groupBy: (element) => element['date'],
+                              groupComparator: (value1, value2) =>
+                                  value2.compareTo(value1),
+                              itemComparator: (item1, item2) =>
+                                  item1['date'].compareTo(item2['date']),
+                              order: GroupedListOrder.ASC,
+                              useStickyGroupSeparators: true,
+                              groupSeparatorBuilder: (String value) => Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      value,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                              indexedItemBuilder:
+                                  (context, dynamic element, index) {
+                                DocumentSnapshot document = _resultList[index];
+                                String docID = document.id;
 
-                          Map<String, dynamic> data =
-                              document.data() as Map<String, dynamic>;
-                          String noteText = data['name'];
+                                Map<String, dynamic> data =
+                                    document.data() as Map<String, dynamic>;
 
-                          return Container(
-                            color:
-                                data['attempt'] == 0 ? Colors.redAccent : null,
-                            child: ListTile(
-                              onTap: () {
-                                openNoteBox(
-                                    docId: docID,
-                                    data: data,
-                                    username: vm.user?.email?.substring(
-                                        0, vm.user?.email?.indexOf('@')));
-                              },
-                              title: Text(noteText),
-                              subtitle: Text(data['date']),
-                              trailing: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: data['status'] == 1
-                                        ? Colors.blueAccent
-                                        : data['status'] == 2
-                                            ? Colors.orangeAccent
-                                            : Colors.redAccent),
-                                onPressed: () {
-                                  openNoteBox(
-                                      docId: docID,
-                                      data: data,
-                                      username: vm.user?.email?.substring(
-                                          0, vm.user?.email?.indexOf('@')));
-                                },
-                                child: Text(
-                                    Helper().convertStatus(data['status'])),
-                              ),
-                            ),
-                          );
-                        });
-                  } else {
-                    return Text(LocaleKeys.no_data.tr());
-                  }
-                },
+                                return Container(
+                                  color: element['attempt'] == 0
+                                      ? Colors.redAccent
+                                      : null,
+                                  child: ListTile(
+                                    onTap: () {
+                                      openNoteBox(
+                                          docId: docID,
+                                          data: data,
+                                          username: vm.user?.email?.substring(
+                                              0, vm.user?.email?.indexOf('@')));
+                                    },
+                                    title: Text(element['name']),
+                                    subtitle: Text(element['date']),
+                                    trailing: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              element['status'] == 1
+                                                  ? Colors.blueAccent
+                                                  : element['status'] == 2
+                                                      ? Colors.orangeAccent
+                                                      : Colors.redAccent),
+                                      onPressed: () {
+                                        openNoteBox(
+                                            docId: docID,
+                                            data: data,
+                                            username: vm.user?.email?.substring(
+                                                0,
+                                                vm.user?.email?.indexOf('@')));
+                                      },
+                                      child: Text(Helper()
+                                          .convertStatus(element['status'])),
+                                    ),
+                                  ),
+                                );
+                              });
+                        } else {
+                          return Text(LocaleKeys.no_data.tr());
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ));
         });
   }
