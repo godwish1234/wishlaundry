@@ -246,215 +246,219 @@ class _HomeViewState extends State<HomeView> {
       context: context,
       builder: (context) => AlertDialog(
         actionsAlignment: MainAxisAlignment.center,
-        content: Form(
-          key: _formKey,
-          child: data?['status'] != 3
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    data == null
-                        ? TextFormField(
-                            decoration: InputDecoration(
-                                labelText: LocaleKeys.name.tr()),
-                            controller: nameTextController,
-                            validator: (value) => value == ''
-                                ? LocaleKeys.form_name_empty.tr()
-                                : null,
-                          )
-                        : TextFormField(
-                            decoration:
-                                const InputDecoration(labelText: 'Name'),
-                            controller: TextEditingController()
-                              ..text = data['name'],
-                            readOnly: true,
-                          ),
-                    data == null
-                        ? TextFormField(
-                            decoration: InputDecoration(
-                                labelText: LocaleKeys.date.tr()),
-                            controller: dateTextController,
-                            onTap: () async {
-                              final DateTime? picked = await showDatePicker(
-                                  cancelText: 'cancel',
-                                  confirmText: 'ok',
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(DateTime.now().day - 1),
-                                  lastDate: DateTime.now());
+        content: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: data?['status'] != 3
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      data == null
+                          ? TextFormField(
+                              decoration: InputDecoration(
+                                  labelText: LocaleKeys.name.tr()),
+                              controller: nameTextController,
+                              validator: (value) => value == ''
+                                  ? LocaleKeys.form_name_empty.tr()
+                                  : null,
+                            )
+                          : TextFormField(
+                              decoration:
+                                  const InputDecoration(labelText: 'Name'),
+                              controller: TextEditingController()
+                                ..text = data['name'],
+                              readOnly: true,
+                            ),
+                      data == null
+                          ? TextFormField(
+                              decoration: InputDecoration(
+                                  labelText: LocaleKeys.date.tr()),
+                              controller: dateTextController,
+                              onTap: () async {
+                                final DateTime? picked = await showDatePicker(
+                                    cancelText: 'cancel',
+                                    confirmText: 'ok',
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(DateTime.now().day - 1),
+                                    lastDate: DateTime.now());
 
-                              if (picked != null) {
-                                dateTextController.text =
-                                    DateFormat('dd/MM/yyyy').format(picked);
-                              }
-                            },
-                            validator: (value) => value == ''
-                                ? LocaleKeys.form_date_empty.tr()
-                                : null,
-                          )
-                        : TextFormField(
-                            decoration: InputDecoration(
-                                labelText: LocaleKeys.date.tr()),
-                            controller: TextEditingController()
-                              ..text = data['date'],
-                            readOnly: true,
+                                if (picked != null) {
+                                  dateTextController.text =
+                                      DateFormat('dd/MM/yyyy').format(picked);
+                                }
+                              },
+                              validator: (value) => value == ''
+                                  ? LocaleKeys.form_date_empty.tr()
+                                  : null,
+                            )
+                          : TextFormField(
+                              decoration: InputDecoration(
+                                  labelText: LocaleKeys.date.tr()),
+                              controller: TextEditingController()
+                                ..text = data['date'],
+                              readOnly: true,
+                            ),
+                      TextFormField(
+                          decoration: InputDecoration(
+                              labelText: LocaleKeys.clothes.tr()),
+                          controller: clothesTextController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          keyboardType: TextInputType.number,
+                          validator: data == null
+                              ? (value) => value == ''
+                                  ? LocaleKeys.form_clothes_empty.tr()
+                                  : null
+                              : (value) {
+                                  if (value !=
+                                      data['clothesCount'].toString()) {
+                                    return LocaleKeys.form_clothes_match.tr();
+                                  }
+                                  return null;
+                                }),
+                      TextFormField(
+                          decoration: InputDecoration(
+                              labelText: LocaleKeys.underpants.tr()),
+                          controller: underpantsTextController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          keyboardType: TextInputType.number,
+                          validator: data == null
+                              ? null
+                              : (value) {
+                                  if (value !=
+                                          data['underpantsCount'].toString() &&
+                                      data['underpantsCount'] != 0) {
+                                    return LocaleKeys.form_underpants_match
+                                        .tr();
+                                  }
+                                  return null;
+                                }),
+                      TextFormField(
+                          decoration:
+                              InputDecoration(labelText: LocaleKeys.bras.tr()),
+                          controller: brasTextController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          keyboardType: TextInputType.number,
+                          validator: data == null
+                              ? null
+                              : (value) {
+                                  if (value != data['brasCount'].toString() &&
+                                      data['brasCount'] != 0) {
+                                    return LocaleKeys.form_bras_match.tr();
+                                  }
+                                  return null;
+                                }),
+                      TextFormField(
+                          decoration:
+                              InputDecoration(labelText: LocaleKeys.socks.tr()),
+                          controller: socksTextController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          keyboardType: TextInputType.number,
+                          validator: data == null
+                              ? null
+                              : (value) {
+                                  if (value != data['socksCount'].toString() &&
+                                      data['socksCount'] != 0) {
+                                    return LocaleKeys.form_socks_match.tr();
+                                  }
+                                  return null;
+                                }),
+                      TextFormField(
+                          decoration: InputDecoration(
+                              labelText: LocaleKeys.others.tr()),
+                          controller: othersTextController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          keyboardType: TextInputType.number,
+                          validator: data == null
+                              ? null
+                              : (value) {
+                                  if (value != data['othersCount'].toString() &&
+                                      data['othersCount'] != 0) {
+                                    return LocaleKeys.form_others_match.tr();
+                                  }
+                                  return null;
+                                })
+                    ],
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            LocaleKeys.history_header.tr(),
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                    TextFormField(
-                        decoration:
-                            InputDecoration(labelText: LocaleKeys.clothes.tr()),
-                        controller: clothesTextController,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
                         ],
-                        keyboardType: TextInputType.number,
-                        validator: data == null
-                            ? (value) => value == ''
-                                ? LocaleKeys.form_clothes_empty.tr()
-                                : null
-                            : (value) {
-                                if (value != data['clothesCount'].toString()) {
-                                  return LocaleKeys.form_clothes_match.tr();
-                                }
-                                return null;
-                              }),
-                    TextFormField(
-                        decoration: InputDecoration(
-                            labelText: LocaleKeys.underpants.tr()),
-                        controller: underpantsTextController,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        keyboardType: TextInputType.number,
-                        validator: data == null
-                            ? null
-                            : (value) {
-                                if (value !=
-                                        data['underpantsCount'].toString() &&
-                                    data['underpantsCount'] != 0) {
-                                  return LocaleKeys.form_underpants_match.tr();
-                                }
-                                return null;
-                              }),
-                    TextFormField(
-                        decoration:
-                            InputDecoration(labelText: LocaleKeys.bras.tr()),
-                        controller: brasTextController,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        keyboardType: TextInputType.number,
-                        validator: data == null
-                            ? null
-                            : (value) {
-                                if (value != data['brasCount'].toString() &&
-                                    data['brasCount'] != 0) {
-                                  return LocaleKeys.form_bras_match.tr();
-                                }
-                                return null;
-                              }),
-                    TextFormField(
-                        decoration:
-                            InputDecoration(labelText: LocaleKeys.socks.tr()),
-                        controller: socksTextController,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        keyboardType: TextInputType.number,
-                        validator: data == null
-                            ? null
-                            : (value) {
-                                if (value != data['socksCount'].toString() &&
-                                    data['socksCount'] != 0) {
-                                  return LocaleKeys.form_socks_match.tr();
-                                }
-                                return null;
-                              }),
-                    TextFormField(
-                        decoration:
-                            InputDecoration(labelText: LocaleKeys.others.tr()),
-                        controller: othersTextController,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        keyboardType: TextInputType.number,
-                        validator: data == null
-                            ? null
-                            : (value) {
-                                if (value != data['othersCount'].toString() &&
-                                    data['othersCount'] != 0) {
-                                  return LocaleKeys.form_others_match.tr();
-                                }
-                                return null;
-                              })
-                  ],
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          LocaleKeys.history_header.tr(),
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blueAccent),
-                            onPressed: () {},
-                            child: Text(
-                                "\nHitung awal: ${DateFormat('dd/MM/yyyy – kk:mm').format(data?['initial']['timestamp'].toDate())} \n\n${data?['initial']['count']}\n"),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blueAccent),
+                              onPressed: () {},
+                              child: Text(
+                                  "\nHitung awal: ${DateFormat('dd/MM/yyyy – kk:mm').format(data?['initial']['timestamp'].toDate())} \n\n${data?['initial']['count']}\n"),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    data?['dry'] != null
-                        ? Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.orangeAccent),
-                                  onPressed: () {},
-                                  child: Text(
-                                      "\nDry: ${DateFormat('dd/MM/yyyy – kk:mm').format(data?['dry']['timestamp'].toDate())} \n\n${data?['dry']['count']}\n"),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      data?['dry'] != null
+                          ? Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.orangeAccent),
+                                    onPressed: () {},
+                                    child: Text(
+                                        "\nDry: ${DateFormat('dd/MM/yyyy – kk:mm').format(data?['dry']['timestamp'].toDate())} \n\n${data?['dry']['count']}\n"),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          )
-                        : Container(),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    data?['pack'] != null
-                        ? Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.redAccent),
-                                  onPressed: () {},
-                                  child: Text(
-                                      "\nPacking: ${DateFormat('dd/MM/yyyy – kk:mm').format(data?['pack']['timestamp'].toDate())} \n\n${data?['pack']['count']}\n"),
+                              ],
+                            )
+                          : Container(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      data?['pack'] != null
+                          ? Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.redAccent),
+                                    onPressed: () {},
+                                    child: Text(
+                                        "\nPacking: ${DateFormat('dd/MM/yyyy – kk:mm').format(data?['pack']['timestamp'].toDate())} \n\n${data?['pack']['count']}\n"),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          )
-                        : Container()
-                  ],
-                ),
+                              ],
+                            )
+                          : Container()
+                    ],
+                  ),
+          ),
         ),
         actions: [
           Padding(
