@@ -640,6 +640,7 @@ class _HomeViewState extends State<HomeView> {
         onViewModelReady: (vm) => vm.initialize(),
         builder: (context, vm, child) {
           return Scaffold(
+              resizeToAvoidBottomInset: true,
               appBar: AppBar(
                 title: Text(LocaleKeys.home_nav.tr()),
               ),
