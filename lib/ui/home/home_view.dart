@@ -379,7 +379,7 @@ class _HomeViewState extends State<HomeView> {
                         validator: data == null
                             ? null
                             : (value) {
-                                if (value != data['socksCount'].toString() &&
+                                if (value != data['othersCount'].toString() &&
                                     data['othersCount'] != 0) {
                                   return LocaleKeys.form_others_match.tr();
                                 }
