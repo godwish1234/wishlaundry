@@ -1,6 +1,7 @@
 {
   "projects": {
-    "wishlaundry": "wish-laundry-1b532"
+    "wishlaundry": "wish-laundry-1b532",
+    "default": "wish-laundry-1b532"
   },
   "targets": {},
   "etags": {}

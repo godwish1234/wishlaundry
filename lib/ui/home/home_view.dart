@@ -47,6 +47,9 @@ class _HomeViewState extends State<HomeView> {
 
   List _allResults = [];
   List _resultList = [];
+  var showResult = [];
+
+  bool isSearched = false;
 
   @override
   void initState() {
@@ -56,14 +59,13 @@ class _HomeViewState extends State<HomeView> {
   }
 
   _onSearchChanged() {
-    print(_searchController.text);
-
     searchResultList();
   }
 
   searchResultList() {
     var showResult = [];
-    if (_searchController.text != '') {
+    isSearched = true;
+    if (_searchController.text != '' && _searchController.text.length >= 3) {
       for (var clientSnapShot in _allResults) {
         var name = clientSnapShot['name'].toString().toLowerCase();
         if (name.contains(_searchController.text.toLowerCase())) {
@@ -79,7 +81,7 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  getClientStream() async {
+  Future<void> getClientStream() async {
     var data = await FirebaseFirestore.instance
         .collection('transaction')
         .orderBy('date', descending: true)
@@ -129,6 +131,7 @@ class _HomeViewState extends State<HomeView> {
             '$username menghitung ${clothesTextController.text} baju/celana ${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
 
         Navigator.pop(context);
+        getClientStream();
       } else {
         Fluttertoast.showToast(
             msg: LocaleKeys.form_invalid.tr(),
@@ -158,6 +161,7 @@ class _HomeViewState extends State<HomeView> {
                     : int.parse(othersTextController.text),
                 '$username menghitung ${clothesTextController.text} baju/celana ${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
             Navigator.pop(context);
+            getClientStream();
             break;
           case 2:
             firestoreService.forceUpdate(
@@ -179,6 +183,7 @@ class _HomeViewState extends State<HomeView> {
                     : int.parse(othersTextController.text),
                 '$username menghitung ${clothesTextController.text} baju/celana ${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
             Navigator.pop(context);
+            getClientStream();
             break;
         }
       } else {
@@ -188,17 +193,20 @@ class _HomeViewState extends State<HomeView> {
               firestoreService.updateNote(docId, 2, 'dry',
                   '$username menghitung ${clothesTextController.text} baju/celana ${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
               Navigator.pop(context);
+              getClientStream();
               break;
             case 2:
               firestoreService.updateNote(docId, 3, 'pack',
                   '$username menghitung ${clothesTextController.text} baju/celana ${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
               Navigator.pop(context);
+              getClientStream();
               break;
           }
         } else {
           attempts = attempts! - 1;
           if (attempts! == 0) {
             Navigator.pop(context);
+            getClientStream();
           }
           showDialog(
               context: context,
@@ -699,82 +707,70 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ),
                   Expanded(
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream: firestoreService.getNotesStream(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          getClientStream();
+                      //display as a list
+                      child: RefreshIndicator(
+                    onRefresh: getClientStream,
+                    child: GroupedListView(
+                        elements: _resultList,
+                        groupBy: (element) => element['date'],
+                        groupComparator: (value1, value2) =>
+                            value2.compareTo(value1),
+                        itemComparator: (item1, item2) =>
+                            item1['date'].compareTo(item2['date']),
+                        order: GroupedListOrder.ASC,
+                        useStickyGroupSeparators: true,
+                        groupSeparatorBuilder: (String value) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                value,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                        separator: const Divider(),
+                        indexedItemBuilder: (context, dynamic element, index) {
+                          DocumentSnapshot document = _resultList[index];
+                          String docID = document.id;
 
-                          //display as a list
-                          return GroupedListView(
-                              elements: _resultList,
-                              groupBy: (element) => element['date'],
-                              groupComparator: (value1, value2) =>
-                                  value2.compareTo(value1),
-                              itemComparator: (item1, item2) =>
-                                  item1['date'].compareTo(item2['date']),
-                              order: GroupedListOrder.ASC,
-                              useStickyGroupSeparators: true,
-                              groupSeparatorBuilder: (String value) => Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      value,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                              indexedItemBuilder:
-                                  (context, dynamic element, index) {
-                                DocumentSnapshot document = _resultList[index];
-                                String docID = document.id;
+                          Map<String, dynamic> data =
+                              document.data() as Map<String, dynamic>;
 
-                                Map<String, dynamic> data =
-                                    document.data() as Map<String, dynamic>;
-
-                                return Container(
-                                  color: element['attempt'] == 0
-                                      ? Colors.redAccent
-                                      : null,
-                                  child: ListTile(
-                                    onTap: () {
-                                      openNoteBox(
-                                          docId: docID,
-                                          data: data,
-                                          username: vm.user?.email?.substring(
-                                              0, vm.user?.email?.indexOf('@')));
-                                    },
-                                    title: Text(element['name']),
-                                    subtitle: Text(element['date']),
-                                    trailing: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              element['status'] == 1
-                                                  ? Colors.blueAccent
-                                                  : element['status'] == 2
-                                                      ? Colors.orangeAccent
-                                                      : Colors.redAccent),
-                                      onPressed: () {
-                                        openNoteBox(
-                                            docId: docID,
-                                            data: data,
-                                            username: vm.user?.email?.substring(
-                                                0,
-                                                vm.user?.email?.indexOf('@')));
-                                      },
-                                      child: Text(Helper()
-                                          .convertStatus(element['status'])),
-                                    ),
-                                  ),
-                                );
-                              });
-                        } else {
-                          return Text(LocaleKeys.no_data.tr());
-                        }
-                      },
-                    ),
-                  ),
+                          return Container(
+                            color: document['attempt'] == 0
+                                ? Colors.redAccent
+                                : null,
+                            child: ListTile(
+                              onTap: () {
+                                openNoteBox(
+                                    docId: docID,
+                                    data: data,
+                                    username: vm.user?.email?.substring(
+                                        0, vm.user?.email?.indexOf('@')));
+                              },
+                              title: Text(document['name']),
+                              // subtitle: Text(element['date']),
+                              trailing: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: document['status'] == 1
+                                        ? Colors.blueAccent
+                                        : document['status'] == 2
+                                            ? Colors.orangeAccent
+                                            : Colors.redAccent),
+                                onPressed: () {
+                                  openNoteBox(
+                                      docId: docID,
+                                      data: data,
+                                      username: vm.user?.email?.substring(
+                                          0, vm.user?.email?.indexOf('@')));
+                                },
+                                child: Text(
+                                    Helper().convertStatus(element['status'])),
+                              ),
+                            ),
+                          );
+                        }),
+                  )),
                 ],
               ));
         });
