@@ -67,7 +67,8 @@ class FirestoreServiceImpl implements FirestoreService {
       step: {
         'count': totalCount,
         'timestamp': Timestamp.now(),
-      }
+      },
+      'attempt': 2
     });
   }
 
