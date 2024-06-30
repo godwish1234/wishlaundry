@@ -737,9 +737,8 @@ class _HomeViewState extends State<HomeView> {
                               document.data() as Map<String, dynamic>;
 
                           return Container(
-                            color: document['attempt'] == 0
-                                ? Colors.redAccent
-                                : null,
+                            color:
+                                data['attempt'] == 0 ? Colors.redAccent : null,
                             child: ListTile(
                               onTap: () {
                                 openNoteBox(
@@ -748,13 +747,13 @@ class _HomeViewState extends State<HomeView> {
                                     username: vm.user?.email?.substring(
                                         0, vm.user?.email?.indexOf('@')));
                               },
-                              title: Text(document['name']),
+                              title: Text(data['name']),
                               // subtitle: Text(element['date']),
                               trailing: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor: document['status'] == 1
+                                    backgroundColor: data['status'] == 1
                                         ? Colors.blueAccent
-                                        : document['status'] == 2
+                                        : data['status'] == 2
                                             ? Colors.orangeAccent
                                             : Colors.redAccent),
                                 onPressed: () {
@@ -765,7 +764,7 @@ class _HomeViewState extends State<HomeView> {
                                           0, vm.user?.email?.indexOf('@')));
                                 },
                                 child: Text(
-                                    Helper().convertStatus(element['status'])),
+                                    Helper().convertStatus(data['status'])),
                               ),
                             ),
                           );
