@@ -82,7 +82,8 @@ class FirestoreServiceImpl implements FirestoreService {
       int brasCount,
       int socksCount,
       int othersCount,
-      String totalCount) {
+      String totalCount,
+      int bypass) {
     return notes.doc(docID).update({
       'clothesCount': clothesCount,
       'underpantsCount': underpantsCount,
@@ -95,6 +96,7 @@ class FirestoreServiceImpl implements FirestoreService {
         'count': totalCount,
         'timestamp': Timestamp.now(),
       },
+      'bypass': bypass,
       'attempt': 2
     });
   }

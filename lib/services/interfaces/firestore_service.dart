@@ -22,6 +22,7 @@ abstract class FirestoreService {
       int brasCount,
       int socksCount,
       int othersCount,
-      String totalCount);
+      String totalCount,
+      int bypass);
   Future<void> updateNoteIncorrectInput(String docID, int attempt);
 }

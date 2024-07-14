@@ -107,7 +107,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void validateAndSave(String? docId, Map<String, dynamic>? data,
-      String? username, bool? forced) {
+      String? username, int? bypass) {
     final form = _formKey.currentState;
 
     if (docId == null) {
@@ -128,7 +128,7 @@ class _HomeViewState extends State<HomeView> {
             othersTextController.text == ''
                 ? 0
                 : int.parse(othersTextController.text),
-            '$username menghitung ${clothesTextController.text} baju/celana ${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
+            '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
 
         Navigator.pop(context);
         getClientStream();
@@ -139,7 +139,7 @@ class _HomeViewState extends State<HomeView> {
             toastLength: Toast.LENGTH_LONG);
       }
     } else {
-      if (forced == true) {
+      if (bypass != 0) {
         switch (data?['status']) {
           case 1:
             firestoreService.forceUpdate(
@@ -159,7 +159,8 @@ class _HomeViewState extends State<HomeView> {
                 othersTextController.text == ''
                     ? 0
                     : int.parse(othersTextController.text),
-                '$username menghitung ${clothesTextController.text} baju/celana ${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
+                '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}',
+                bypass ?? 0);
             Navigator.pop(context);
             getClientStream();
             break;
@@ -181,7 +182,8 @@ class _HomeViewState extends State<HomeView> {
                 othersTextController.text == ''
                     ? 0
                     : int.parse(othersTextController.text),
-                '$username menghitung ${clothesTextController.text} baju/celana ${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
+                '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}',
+                bypass ?? 0);
             Navigator.pop(context);
             getClientStream();
             break;
@@ -191,13 +193,13 @@ class _HomeViewState extends State<HomeView> {
           switch (data?['status']) {
             case 1:
               firestoreService.updateNote(docId, 2, 'dry',
-                  '$username menghitung ${clothesTextController.text} baju/celana ${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
+                  '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
               Navigator.pop(context);
               getClientStream();
               break;
             case 2:
               firestoreService.updateNote(docId, 3, 'pack',
-                  '$username menghitung ${clothesTextController.text} baju/celana ${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
+                  '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
               Navigator.pop(context);
               getClientStream();
               break;
@@ -284,17 +286,37 @@ class _HomeViewState extends State<HomeView> {
                               controller: dateTextController,
                               onTap: () async {
                                 final DateTime? picked = await showDatePicker(
-                                    cancelText: 'cancel',
-                                    confirmText: 'ok',
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(DateTime.now().day - 1),
-                                    lastDate: DateTime.now());
+                                        context: context,
+                                        cancelText: 'cancel',
+                                        confirmText: 'ok',
+                                        initialDate: DateTime.now(),
+                                        firstDate:
+                                            DateTime(DateTime.now().day - 1),
+                                        lastDate: DateTime.now())
+                                    .then((selectedDate) {
+                                  // After selecting the date, display the time picker.
+                                  if (selectedDate != null) {
+                                    showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.now(),
+                                    ).then((selectedTime) {
+                                      // Handle the selected date and time here.
+                                      if (selectedTime != null) {
+                                        DateTime selectedDateTime = DateTime(
+                                          selectedDate.year,
+                                          selectedDate.month,
+                                          selectedDate.day,
+                                          selectedTime.hour,
+                                          selectedTime.minute,
+                                        );
 
-                                if (picked != null) {
-                                  dateTextController.text =
-                                      DateFormat('dd/MM/yyyy').format(picked);
-                                }
+                                        dateTextController.text =
+                                            DateFormat('dd/MM/yyyy HH:mm')
+                                                .format(selectedDateTime);
+                                      }
+                                    });
+                                  }
+                                });
                               },
                               validator: (value) => value == ''
                                   ? LocaleKeys.form_date_empty.tr()
@@ -616,8 +638,34 @@ class _HomeViewState extends State<HomeView> {
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.redAccent),
                                       onPressed: () {
-                                        validateAndSave(
-                                            docId, data, username, true);
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text("Bypass"),
+                                              content: const Text(
+                                                  "Perhitungannya kurang atau lebih?"),
+                                              actions: [
+                                                TextButton(
+                                                  child: const Text("Kurang"),
+                                                  onPressed: () {
+                                                    validateAndSave(docId, data,
+                                                        username, 1);
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: const Text("Lebih"),
+                                                  onPressed: () {
+                                                    validateAndSave(docId, data,
+                                                        username, 2);
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
                                       },
                                       child: Text(LocaleKeys.bypass.tr())),
                                 )
@@ -631,7 +679,7 @@ class _HomeViewState extends State<HomeView> {
                                     ? null
                                     : () {
                                         validateAndSave(
-                                            docId, data, username, false);
+                                            docId, data, username, 0);
                                       },
                                 child: docId == null
                                     ? Text(LocaleKeys.add.tr())
@@ -723,11 +771,19 @@ class _HomeViewState extends State<HomeView> {
                     onRefresh: getClientStream,
                     child: GroupedListView(
                         elements: _resultList,
-                        groupBy: (element) => element['date'],
+                        groupBy: (element) => DateFormat('dd/MM/yyyy').format(
+                            DateFormat("dd/MM/yyyy").parse(element['date'])),
                         groupComparator: (value1, value2) =>
                             value2.compareTo(value1),
                         itemComparator: (item1, item2) =>
-                            item1['date'].compareTo(item2['date']),
+                            DateFormat('dd/MM/yyyy')
+                                .parse(item1['date'])
+                                .toString()
+                                .compareTo(
+                                  DateFormat('dd/MM/yyyy')
+                                      .parse(item2['date'])
+                                      .toString(),
+                                ),
                         order: GroupedListOrder.ASC,
                         useStickyGroupSeparators: true,
                         groupSeparatorBuilder: (String value) => Padding(
@@ -758,8 +814,34 @@ class _HomeViewState extends State<HomeView> {
                                     username: vm.user?.email?.substring(
                                         0, vm.user?.email?.indexOf('@')));
                               },
-                              title: Text(data['name']),
-                              // subtitle: Text(element['date']),
+                              title: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: data['name'],
+                                    ),
+                                    data['bypass'] != null
+                                        ? WidgetSpan(
+                                            child: Transform.translate(
+                                              offset: const Offset(0.0, -7.0),
+                                              child: Text(
+                                                data['bypass'] == 2
+                                                    ? '  LEBIH'
+                                                    : '  KURANG',
+                                                style: const TextStyle(
+                                                    fontSize: 9,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.red),
+                                              ),
+                                            ),
+                                          )
+                                        : WidgetSpan(child: Container())
+                                  ],
+                                ),
+                              ),
+                              subtitle: Text(DateFormat('HH:mm').format(
+                                  DateFormat("dd/MM/yyyy HH:mm")
+                                      .parse(data['date']))),
                               trailing: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: data['status'] == 1
