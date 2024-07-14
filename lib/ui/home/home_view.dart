@@ -337,9 +337,11 @@ class _HomeViewState extends State<HomeView> {
                           validator: data == null
                               ? null
                               : (value) {
+                                  if (value == '') {
+                                    value = "0";
+                                  }
                                   if (value !=
-                                          data['underpantsCount'].toString() &&
-                                      data['underpantsCount'] != 0) {
+                                      data['underpantsCount'].toString()) {
                                     return LocaleKeys.form_underpants_match
                                         .tr();
                                   }
@@ -356,6 +358,9 @@ class _HomeViewState extends State<HomeView> {
                           validator: data == null
                               ? null
                               : (value) {
+                                  if (value == '') {
+                                    value = "0";
+                                  }
                                   if (value != data['brasCount'].toString() &&
                                       data['brasCount'] != 0) {
                                     return LocaleKeys.form_bras_match.tr();
@@ -373,6 +378,9 @@ class _HomeViewState extends State<HomeView> {
                           validator: data == null
                               ? null
                               : (value) {
+                                  if (value == '') {
+                                    value = "0";
+                                  }
                                   if (value != data['socksCount'].toString() &&
                                       data['socksCount'] != 0) {
                                     return LocaleKeys.form_socks_match.tr();
@@ -390,6 +398,9 @@ class _HomeViewState extends State<HomeView> {
                           validator: data == null
                               ? null
                               : (value) {
+                                  if (value == '') {
+                                    value = "0";
+                                  }
                                   if (value != data['othersCount'].toString() &&
                                       data['othersCount'] != 0) {
                                     return LocaleKeys.form_others_match.tr();
