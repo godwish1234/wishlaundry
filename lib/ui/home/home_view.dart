@@ -59,7 +59,11 @@ class _HomeViewState extends State<HomeView> {
   }
 
   _onSearchChanged() {
-    setState(() {});
+    if (_searchController.text == '' ||
+        (_searchController.text.length >= 3 &&
+            _searchController.text.length <= 5)) {
+      setState(() {});
+    }
   }
 
   // searchResultList() {
@@ -767,110 +771,59 @@ class _HomeViewState extends State<HomeView> {
                   ),
                   Expanded(
                       //display as a list
-                      child: RefreshIndicator(
-                    onRefresh: refreshList,
-                    child: StreamBuilder<QuerySnapshot>(
-                        stream: (_searchController.text != "" &&
-                                _searchController.text.length >= 3)
-                            ? firestoreService.searchStream(
-                                _searchController.text.toUpperCase())
-                            : firestoreService.getNotesStream(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            List notesList = snapshot.data!.docs;
-                            return GroupedListView(
-                                elements: notesList,
-                                groupBy: (element) => DateFormat('dd/MM/yyyy')
-                                    .format(DateFormat("dd/MM/yyyy")
-                                        .parse(element['date'])),
-                                groupComparator: (value1, value2) =>
-                                    value2.compareTo(value1),
-                                itemComparator: (item1, item2) =>
-                                    DateFormat('dd/MM/yyyy')
-                                        .parse(item1['date'])
-                                        .toString()
-                                        .compareTo(
-                                          DateFormat('dd/MM/yyyy')
-                                              .parse(item2['date'])
-                                              .toString(),
-                                        ),
-                                order: GroupedListOrder.ASC,
-                                useStickyGroupSeparators: true,
-                                groupSeparatorBuilder: (String value) =>
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        value,
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                separator: const Divider(),
-                                indexedItemBuilder:
-                                    (context, dynamic element, index) {
-                                  DocumentSnapshot document = notesList[index];
-                                  String docID = document.id;
-
-                                  Map<String, dynamic> data =
-                                      document.data() as Map<String, dynamic>;
-
-                                  return Container(
-                                    color: data['attempt'] == 0
-                                        ? Colors.redAccent
-                                        : null,
-                                    child: ListTile(
-                                      onTap: () {
-                                        openNoteBox(
-                                            docId: docID,
-                                            data: data,
-                                            username: vm.user?.email?.substring(
-                                                0,
-                                                vm.user?.email?.indexOf('@')));
-                                      },
-                                      title: RichText(
-                                        text: TextSpan(
-                                          style: TextStyle(
-                                              color: data['bypass'] == null
-                                                  ? Colors.black
-                                                  : Colors.red),
-                                          children: [
-                                            TextSpan(
-                                              text: data['name'],
-                                            ),
-                                            data['bypass'] != null
-                                                ? WidgetSpan(
-                                                    child: Transform.translate(
-                                                      offset: const Offset(
-                                                          0.0, -7.0),
-                                                      child: Text(
-                                                        data['bypass'] == 2
-                                                            ? '  LEBIH'
-                                                            : '  KURANG',
-                                                        style: const TextStyle(
-                                                            fontSize: 9,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Colors.red),
-                                                      ),
-                                                    ),
-                                                  )
-                                                : WidgetSpan(child: Container())
-                                          ],
+                      child: StreamBuilder<QuerySnapshot>(
+                          stream: (_searchController.text != "")
+                              ? firestoreService.searchStream(
+                                  _searchController.text.toUpperCase())
+                              : firestoreService.getNotesStream(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              List notesList = snapshot.data!.docs;
+                              return GroupedListView(
+                                  elements: notesList,
+                                  groupBy: (element) => DateFormat('dd/MM/yyyy')
+                                      .format(DateFormat("dd/MM/yyyy")
+                                          .parse(element['date'])),
+                                  groupComparator: (value1, value2) =>
+                                      value2.compareTo(value1),
+                                  itemComparator: (item1, item2) =>
+                                      DateFormat('dd/MM/yyyy')
+                                          .parse(item1['date'])
+                                          .toString()
+                                          .compareTo(
+                                            DateFormat('dd/MM/yyyy')
+                                                .parse(item2['date'])
+                                                .toString(),
+                                          ),
+                                  order: GroupedListOrder.ASC,
+                                  useStickyGroupSeparators: true,
+                                  groupSeparatorBuilder: (String value) =>
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          value,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                      subtitle: Text(DateFormat('HH:mm').format(
-                                          DateFormat("dd/MM/yyyy HH:mm")
-                                              .parse(data['date']))),
-                                      trailing: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: data['status'] == 1
-                                                ? Colors.blueAccent
-                                                : data['status'] == 2
-                                                    ? Colors.orangeAccent
-                                                    : Colors.redAccent),
-                                        onPressed: () {
+                                  separator: const Divider(),
+                                  indexedItemBuilder:
+                                      (context, dynamic element, index) {
+                                    DocumentSnapshot document =
+                                        notesList[index];
+                                    String docID = document.id;
+
+                                    Map<String, dynamic> data =
+                                        document.data() as Map<String, dynamic>;
+
+                                    return Container(
+                                      color: data['attempt'] == 0
+                                          ? Colors.redAccent
+                                          : null,
+                                      child: ListTile(
+                                        onTap: () {
                                           openNoteBox(
                                               docId: docID,
                                               data: data,
@@ -880,17 +833,74 @@ class _HomeViewState extends State<HomeView> {
                                                       vm.user?.email
                                                           ?.indexOf('@')));
                                         },
-                                        child: Text(Helper()
-                                            .convertStatus(data['status'])),
+                                        title: RichText(
+                                          text: TextSpan(
+                                            style: TextStyle(
+                                                color: data['bypass'] == null
+                                                    ? Colors.black
+                                                    : Colors.red),
+                                            children: [
+                                              TextSpan(
+                                                text: data['name'],
+                                              ),
+                                              data['bypass'] != null
+                                                  ? WidgetSpan(
+                                                      child:
+                                                          Transform.translate(
+                                                        offset: const Offset(
+                                                            0.0, -7.0),
+                                                        child: Text(
+                                                          data['bypass'] == 2
+                                                              ? '  LEBIH'
+                                                              : '  KURANG',
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 9,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Colors
+                                                                      .red),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : WidgetSpan(
+                                                      child: Container())
+                                            ],
+                                          ),
+                                        ),
+                                        subtitle: Text(DateFormat('HH:mm')
+                                            .format(
+                                                DateFormat("dd/MM/yyyy HH:mm")
+                                                    .parse(data['date']))),
+                                        trailing: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  data['status'] == 1
+                                                      ? Colors.blueAccent
+                                                      : data['status'] == 2
+                                                          ? Colors.orangeAccent
+                                                          : Colors.redAccent),
+                                          onPressed: () {
+                                            openNoteBox(
+                                                docId: docID,
+                                                data: data,
+                                                username: vm.user?.email
+                                                    ?.substring(
+                                                        0,
+                                                        vm.user?.email
+                                                            ?.indexOf('@')));
+                                          },
+                                          child: Text(Helper()
+                                              .convertStatus(data['status'])),
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                });
-                          } else {
-                            return Text(LocaleKeys.no_data.tr());
-                          }
-                        }),
-                  )),
+                                    );
+                                  });
+                            } else {
+                              return Text(LocaleKeys.no_data.tr());
+                            }
+                          })),
                 ],
               ));
         });
