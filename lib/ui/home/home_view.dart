@@ -816,6 +816,10 @@ class _HomeViewState extends State<HomeView> {
                               },
                               title: RichText(
                                 text: TextSpan(
+                                  style: TextStyle(
+                                      color: data['bypass'] == null
+                                          ? Colors.black
+                                          : Colors.red),
                                   children: [
                                     TextSpan(
                                       text: data['name'],
