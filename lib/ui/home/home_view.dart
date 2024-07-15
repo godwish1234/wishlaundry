@@ -53,44 +53,44 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void initState() {
-    getClientStream();
+    // getClientStream();
     _searchController.addListener(_onSearchChanged);
     super.initState();
   }
 
   _onSearchChanged() {
-    searchResultList();
+    setState(() {});
   }
 
-  searchResultList() {
-    var showResult = [];
-    isSearched = true;
-    if (_searchController.text != '' && _searchController.text.length >= 3) {
-      for (var clientSnapShot in _allResults) {
-        var name = clientSnapShot['name'].toString().toLowerCase();
-        if (name.contains(_searchController.text.toLowerCase())) {
-          showResult.add(clientSnapShot);
-        }
-      }
-    } else {
-      showResult = List.from(_allResults);
-    }
+  // searchResultList() {
+  //   var showResult = [];
+  //   isSearched = true;
+  //   if (_searchController.text != '' && _searchController.text.length >= 3) {
+  //     for (var clientSnapShot in _allResults) {
+  //       var name = clientSnapShot['name'].toString().toLowerCase();
+  //       if (name.contains(_searchController.text.toLowerCase())) {
+  //         showResult.add(clientSnapShot);
+  //       }
+  //     }
+  //   } else {
+  //     showResult = List.from(_allResults);
+  //   }
+
+  //   setState(() {
+  //     _resultList = showResult;
+  //   });
+  // }
+
+  Future<void> refreshList() async {
+    // var data = await FirebaseFirestore.instance
+    // .collection('transaction')
+    // .orderBy('date', descending: true)
+    // .get();
 
     setState(() {
-      _resultList = showResult;
+      // _allResults = data.docs;
     });
-  }
-
-  Future<void> getClientStream() async {
-    var data = await FirebaseFirestore.instance
-        .collection('transaction')
-        .orderBy('date', descending: true)
-        .get();
-
-    setState(() {
-      _allResults = data.docs;
-    });
-    searchResultList();
+    // searchResultList();
   }
 
   @override
@@ -102,7 +102,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void didChangeDependencies() {
-    getClientStream();
+    refreshList();
     super.didChangeDependencies();
   }
 
@@ -131,7 +131,7 @@ class _HomeViewState extends State<HomeView> {
             '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
 
         Navigator.pop(context);
-        getClientStream();
+        // getClientStream();
       } else {
         Fluttertoast.showToast(
             msg: LocaleKeys.form_invalid.tr(),
@@ -162,7 +162,7 @@ class _HomeViewState extends State<HomeView> {
                 '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}',
                 bypass ?? 0);
             Navigator.pop(context);
-            getClientStream();
+            // getClientStream();
             break;
           case 2:
             firestoreService.forceUpdate(
@@ -185,7 +185,7 @@ class _HomeViewState extends State<HomeView> {
                 '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}',
                 bypass ?? 0);
             Navigator.pop(context);
-            getClientStream();
+            // getClientStream();
             break;
         }
       } else {
@@ -195,20 +195,20 @@ class _HomeViewState extends State<HomeView> {
               firestoreService.updateNote(docId, 2, 'dry',
                   '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
               Navigator.pop(context);
-              getClientStream();
+              // getClientStream();
               break;
             case 2:
               firestoreService.updateNote(docId, 3, 'pack',
                   '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
               Navigator.pop(context);
-              getClientStream();
+              // getClientStream();
               break;
           }
         } else {
           attempts = attempts! - 1;
           if (attempts! == 0) {
             Navigator.pop(context);
-            getClientStream();
+            // getClientStream();
           }
           showDialog(
               context: context,
@@ -768,103 +768,127 @@ class _HomeViewState extends State<HomeView> {
                   Expanded(
                       //display as a list
                       child: RefreshIndicator(
-                    onRefresh: getClientStream,
-                    child: GroupedListView(
-                        elements: _resultList,
-                        groupBy: (element) => DateFormat('dd/MM/yyyy').format(
-                            DateFormat("dd/MM/yyyy").parse(element['date'])),
-                        groupComparator: (value1, value2) =>
-                            value2.compareTo(value1),
-                        itemComparator: (item1, item2) =>
-                            DateFormat('dd/MM/yyyy')
-                                .parse(item1['date'])
-                                .toString()
-                                .compareTo(
-                                  DateFormat('dd/MM/yyyy')
-                                      .parse(item2['date'])
-                                      .toString(),
-                                ),
-                        order: GroupedListOrder.ASC,
-                        useStickyGroupSeparators: true,
-                        groupSeparatorBuilder: (String value) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                value,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                        separator: const Divider(),
-                        indexedItemBuilder: (context, dynamic element, index) {
-                          DocumentSnapshot document = _resultList[index];
-                          String docID = document.id;
-
-                          Map<String, dynamic> data =
-                              document.data() as Map<String, dynamic>;
-
-                          return Container(
-                            color:
-                                data['attempt'] == 0 ? Colors.redAccent : null,
-                            child: ListTile(
-                              onTap: () {
-                                openNoteBox(
-                                    docId: docID,
-                                    data: data,
-                                    username: vm.user?.email?.substring(
-                                        0, vm.user?.email?.indexOf('@')));
-                              },
-                              title: RichText(
-                                text: TextSpan(
-                                  style: TextStyle(
-                                      color: data['bypass'] == null
-                                          ? Colors.black
-                                          : Colors.red),
-                                  children: [
-                                    TextSpan(
-                                      text: data['name'],
+                    onRefresh: refreshList,
+                    child: StreamBuilder<QuerySnapshot>(
+                        stream: (_searchController.text != "" &&
+                                _searchController.text.length >= 3)
+                            ? firestoreService.searchStream(
+                                _searchController.text.toUpperCase())
+                            : firestoreService.getNotesStream(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List notesList = snapshot.data!.docs;
+                            return GroupedListView(
+                                elements: notesList,
+                                groupBy: (element) => DateFormat('dd/MM/yyyy')
+                                    .format(DateFormat("dd/MM/yyyy")
+                                        .parse(element['date'])),
+                                groupComparator: (value1, value2) =>
+                                    value2.compareTo(value1),
+                                itemComparator: (item1, item2) =>
+                                    DateFormat('dd/MM/yyyy')
+                                        .parse(item1['date'])
+                                        .toString()
+                                        .compareTo(
+                                          DateFormat('dd/MM/yyyy')
+                                              .parse(item2['date'])
+                                              .toString(),
+                                        ),
+                                order: GroupedListOrder.ASC,
+                                useStickyGroupSeparators: true,
+                                groupSeparatorBuilder: (String value) =>
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        value,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
-                                    data['bypass'] != null
-                                        ? WidgetSpan(
-                                            child: Transform.translate(
-                                              offset: const Offset(0.0, -7.0),
-                                              child: Text(
-                                                data['bypass'] == 2
-                                                    ? '  LEBIH'
-                                                    : '  KURANG',
-                                                style: const TextStyle(
-                                                    fontSize: 9,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.red),
-                                              ),
+                                separator: const Divider(),
+                                indexedItemBuilder:
+                                    (context, dynamic element, index) {
+                                  DocumentSnapshot document = notesList[index];
+                                  String docID = document.id;
+
+                                  Map<String, dynamic> data =
+                                      document.data() as Map<String, dynamic>;
+
+                                  return Container(
+                                    color: data['attempt'] == 0
+                                        ? Colors.redAccent
+                                        : null,
+                                    child: ListTile(
+                                      onTap: () {
+                                        openNoteBox(
+                                            docId: docID,
+                                            data: data,
+                                            username: vm.user?.email?.substring(
+                                                0,
+                                                vm.user?.email?.indexOf('@')));
+                                      },
+                                      title: RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                              color: data['bypass'] == null
+                                                  ? Colors.black
+                                                  : Colors.red),
+                                          children: [
+                                            TextSpan(
+                                              text: data['name'],
                                             ),
-                                          )
-                                        : WidgetSpan(child: Container())
-                                  ],
-                                ),
-                              ),
-                              subtitle: Text(DateFormat('HH:mm').format(
-                                  DateFormat("dd/MM/yyyy HH:mm")
-                                      .parse(data['date']))),
-                              trailing: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: data['status'] == 1
-                                        ? Colors.blueAccent
-                                        : data['status'] == 2
-                                            ? Colors.orangeAccent
-                                            : Colors.redAccent),
-                                onPressed: () {
-                                  openNoteBox(
-                                      docId: docID,
-                                      data: data,
-                                      username: vm.user?.email?.substring(
-                                          0, vm.user?.email?.indexOf('@')));
-                                },
-                                child: Text(
-                                    Helper().convertStatus(data['status'])),
-                              ),
-                            ),
-                          );
+                                            data['bypass'] != null
+                                                ? WidgetSpan(
+                                                    child: Transform.translate(
+                                                      offset: const Offset(
+                                                          0.0, -7.0),
+                                                      child: Text(
+                                                        data['bypass'] == 2
+                                                            ? '  LEBIH'
+                                                            : '  KURANG',
+                                                        style: const TextStyle(
+                                                            fontSize: 9,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.red),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : WidgetSpan(child: Container())
+                                          ],
+                                        ),
+                                      ),
+                                      subtitle: Text(DateFormat('HH:mm').format(
+                                          DateFormat("dd/MM/yyyy HH:mm")
+                                              .parse(data['date']))),
+                                      trailing: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: data['status'] == 1
+                                                ? Colors.blueAccent
+                                                : data['status'] == 2
+                                                    ? Colors.orangeAccent
+                                                    : Colors.redAccent),
+                                        onPressed: () {
+                                          openNoteBox(
+                                              docId: docID,
+                                              data: data,
+                                              username: vm.user?.email
+                                                  ?.substring(
+                                                      0,
+                                                      vm.user?.email
+                                                          ?.indexOf('@')));
+                                        },
+                                        child: Text(Helper()
+                                            .convertStatus(data['status'])),
+                                      ),
+                                    ),
+                                  );
+                                });
+                          } else {
+                            return Text(LocaleKeys.no_data.tr());
+                          }
                         }),
                   )),
                 ],

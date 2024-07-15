@@ -52,8 +52,19 @@ class FirestoreServiceImpl implements FirestoreService {
   }
 
   // READ: get transactions from database
+  @override
   Stream<QuerySnapshot> getNotesStream() {
     final notesStream = notes.orderBy('date', descending: true).snapshots();
+    return notesStream;
+  }
+
+  @override
+  Stream<QuerySnapshot> searchStream(String searchString) {
+    final notesStream = notes
+        .where("name", isGreaterThanOrEqualTo: searchString)
+        .where("name", isLessThanOrEqualTo: "$searchString\uf7ff")
+        .orderBy('name', descending: true)
+        .snapshots();
     return notesStream;
   }
 

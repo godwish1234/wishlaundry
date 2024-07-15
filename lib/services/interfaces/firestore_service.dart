@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 abstract class FirestoreService {
@@ -11,6 +12,8 @@ abstract class FirestoreService {
       int socksCount,
       int othersCount,
       String totalCount);
+  Stream<QuerySnapshot> getNotesStream();
+  Stream<QuerySnapshot> searchStream(String searchString);
   Future<void> updateNote(
       String docID, int status, String step, String totalCount);
   Future<void> forceUpdate(
