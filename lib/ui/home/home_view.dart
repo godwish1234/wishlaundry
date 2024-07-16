@@ -839,6 +839,87 @@ class _HomeViewState extends State<HomeView> {
                                                       title: Text(
                                                           "${data['name']}"),
                                                       content: const Text(
+                                                          "Apakah attempt mau di refresh?"),
+                                                      actions: [
+                                                        TextButton(
+                                                          child: const Text(
+                                                              "Tidak"),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                        TextButton(
+                                                          child:
+                                                              const Text("Ya"),
+                                                          onPressed: () {
+                                                            // Removes that item the list on swipwe
+                                                            setState(() {
+                                                              firestoreService
+                                                                  .updateNoteIncorrectInput(
+                                                                      docID, 2);
+                                                            });
+
+                                                            // Then show a snackbar.
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                                    const SnackBar(
+                                                                        content:
+                                                                            Text('Attempt telah di refresh')));
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              } else {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                          'Tidak ada akses'),
+                                                      content: const Text(
+                                                          "Harap Hubungi Admin"),
+                                                      actions: [
+                                                        TextButton(
+                                                          child:
+                                                              const Text("Ok"),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              }
+                                            },
+                                            backgroundColor: Colors.green,
+                                            foregroundColor: Colors.white,
+                                            icon: Icons.refresh,
+                                            label: 'Refresh',
+                                          ),
+                                          SlidableAction(
+                                            onPressed: (context) {
+                                              if (admins.contains(vm.user?.email
+                                                  ?.substring(
+                                                      0,
+                                                      vm.user?.email
+                                                          ?.indexOf('@')))) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: Text(
+                                                          "${data['name']}"),
+                                                      content: const Text(
                                                           "Apakah mau di hapus?"),
                                                       actions: [
                                                         TextButton(
