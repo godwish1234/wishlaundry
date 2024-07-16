@@ -695,11 +695,6 @@ class _HomeViewState extends State<HomeView> {
               ],
             ),
           ),
-          // data?['status'] == 3
-          //     ? TextButton(
-          //         onPressed: () => Navigator.pop(context),
-          //         child: Text(LocaleKeys.close.tr()))
-          //     : Container()
         ],
       ),
     );
@@ -715,6 +710,44 @@ class _HomeViewState extends State<HomeView> {
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
                 title: Text(LocaleKeys.home_nav.tr()),
+                actions: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(DateFormat('dd MMM yy')
+                          .format(vm.selectedStartDate!)),
+                      Text(DateFormat('dd MMM yy').format(vm.selectedEndDate!)),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: IconButton(
+                      onPressed: () async {
+                        final picked = await showDateRangePicker(
+                          context: context,
+                          initialDateRange: DateTimeRange(
+                              start: vm.selectedStartDate ?? DateTime.now(),
+                              end: vm.selectedEndDate ?? DateTime.now()),
+                          lastDate: DateTime.now(),
+                          firstDate: DateTime.now()
+                              .subtract(const Duration(days: 365)),
+                        );
+                        if (picked != null && picked != null) {
+                          await vm.updateDate(
+                              picked.start,
+                              DateTime(picked.end.year, picked.end.month,
+                                  picked.end.day, 23, 59));
+                          setState(() {});
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.calendar_today,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               drawer: Drawer(
                 child: Padding(
@@ -775,8 +808,13 @@ class _HomeViewState extends State<HomeView> {
                       child: StreamBuilder<QuerySnapshot>(
                           stream: (_searchController.text != "")
                               ? firestoreService.searchStream(
-                                  _searchController.text.toUpperCase())
-                              : firestoreService.getNotesStream(),
+                                  _searchController.text.toUpperCase(),
+                                )
+                              : firestoreService.getNotesStream(
+                                  DateFormat('dd/MM/yyyy HH:mm')
+                                      .format(vm.selectedStartDate!),
+                                  DateFormat('dd/MM/yyyy HH:mm')
+                                      .format(vm.selectedEndDate!)),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               List notesList = snapshot.data!.docs;
@@ -818,6 +856,15 @@ class _HomeViewState extends State<HomeView> {
 
                                     Map<String, dynamic> data =
                                         document.data() as Map<String, dynamic>;
+
+                                    // DateTime date =
+                                    //     DateFormat('dd/MM/yyyy HH:mm')
+                                    //         .parse(data['date']);
+
+                                    // if (!date.isBefore(vm.selectedStartDate!) &&
+                                    //     !date.isAfter(vm.selectedEndDate!)) {
+                                    //   return Container();
+                                    // }
 
                                     return Slidable(
                                       key: UniqueKey(),

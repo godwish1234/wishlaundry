@@ -53,8 +53,12 @@ class FirestoreServiceImpl implements FirestoreService {
 
   // READ: get transactions from database
   @override
-  Stream<QuerySnapshot> getNotesStream() {
-    final notesStream = notes.orderBy('date', descending: true).snapshots();
+  Stream<QuerySnapshot> getNotesStream(String startDate, String endDate) {
+    final notesStream = notes
+        .where('date', isGreaterThanOrEqualTo: startDate)
+        .where('date', isLessThanOrEqualTo: endDate)
+        .orderBy('date', descending: true)
+        .snapshots();
     return notesStream;
   }
 
