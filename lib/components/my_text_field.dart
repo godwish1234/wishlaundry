@@ -9,6 +9,7 @@ class MyTextField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
   final Icon prefixIcon;
+  final IconButton? suffixIcon;
   final Function()? onChanged;
 
   const MyTextField(
@@ -17,6 +18,7 @@ class MyTextField extends StatelessWidget {
       required this.hintText,
       required this.obscureText,
       required this.prefixIcon,
+      this.suffixIcon,
       this.onChanged});
 
   @override
@@ -41,6 +43,7 @@ class MyTextField extends StatelessWidget {
         prefixIcon: prefixIcon,
         prefixIconColor: HexColor("#4f4f4f"),
         filled: true,
+        suffixIcon: suffixIcon,
       ),
     );
   }

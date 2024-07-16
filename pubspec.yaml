@@ -109,6 +109,7 @@ dependencies:
   hexcolor: ^3.0.1
   fluttertoast: ^8.0.9
   grouped_list: ^6.0.0
+  flutter_slidable: ^3.1.1
 
 dev_dependencies:
   flutter_test:

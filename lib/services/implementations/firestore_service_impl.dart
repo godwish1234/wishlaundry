@@ -119,4 +119,9 @@ class FirestoreServiceImpl implements FirestoreService {
       'attempt': attempt,
     });
   }
+
+  @override
+  Future<void> delete(String docID) {
+    return notes.doc(docID).delete();
+  }
 }

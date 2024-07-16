@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:stacked/stacked.dart';
@@ -137,10 +138,8 @@ class _HomeViewState extends State<HomeView> {
         Navigator.pop(context);
         // getClientStream();
       } else {
-        Fluttertoast.showToast(
-            msg: LocaleKeys.form_invalid.tr(),
-            webPosition: "center",
-            toastLength: Toast.LENGTH_LONG);
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(LocaleKeys.form_invalid.tr())));
       }
     } else {
       if (bypass != 0) {
@@ -235,10 +234,8 @@ class _HomeViewState extends State<HomeView> {
                   ));
           firestoreService.updateNoteIncorrectInput(docId, attempts!);
 
-          Fluttertoast.showToast(
-              msg: LocaleKeys.form_invalid.tr(),
-              webPosition: "center",
-              toastLength: Toast.LENGTH_LONG);
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(LocaleKeys.form_invalid.tr())));
         }
       }
     }
@@ -477,7 +474,7 @@ class _HomeViewState extends State<HomeView> {
                                         backgroundColor: Colors.orangeAccent),
                                     onPressed: () {},
                                     child: Text(
-                                        "\nDry: ${DateFormat('dd/MM/yyyy – kk:mm').format(data?['dry']['timestamp'].toDate())} \n\n${data?['dry']['count']}\n"),
+                                        "\nKering: ${DateFormat('dd/MM/yyyy – kk:mm').format(data?['dry']['timestamp'].toDate())} \n\n${data?['dry']['count']}\n"),
                                   ),
                                 ),
                               ],
@@ -581,7 +578,7 @@ class _HomeViewState extends State<HomeView> {
                                                                   onPressed:
                                                                       () {},
                                                                   child: Text(
-                                                                      "\nDry: ${DateFormat('dd/MM/yyyy – kk:mm').format(data?['dry']['timestamp'].toDate())} \n\n${data?['dry']['count']}\n"),
+                                                                      "\nKering: ${DateFormat('dd/MM/yyyy – kk:mm').format(data?['dry']['timestamp'].toDate())} \n\n${data?['dry']['count']}\n"),
                                                                 ),
                                                               ),
                                                             ],
@@ -767,6 +764,10 @@ class _HomeViewState extends State<HomeView> {
                       hintText: LocaleKeys.search.tr(),
                       obscureText: false,
                       prefixIcon: const Icon(Icons.search_outlined),
+                      suffixIcon: IconButton(
+                        onPressed: _searchController.clear,
+                        icon: const Icon(Icons.clear_outlined),
+                      ),
                     ),
                   ),
                   Expanded(
@@ -818,70 +819,101 @@ class _HomeViewState extends State<HomeView> {
                                     Map<String, dynamic> data =
                                         document.data() as Map<String, dynamic>;
 
-                                    return Container(
-                                      color: data['attempt'] == 0
-                                          ? Colors.redAccent
-                                          : null,
-                                      child: ListTile(
-                                        onTap: () {
-                                          openNoteBox(
-                                              docId: docID,
-                                              data: data,
-                                              username: vm.user?.email
+                                    return Slidable(
+                                      key: UniqueKey(),
+                                      endActionPane: ActionPane(
+                                        motion: const ScrollMotion(),
+                                        children: [
+                                          SlidableAction(
+                                            onPressed: (context) {
+                                              if (admins.contains(vm.user?.email
                                                   ?.substring(
                                                       0,
                                                       vm.user?.email
-                                                          ?.indexOf('@')));
-                                        },
-                                        title: RichText(
-                                          text: TextSpan(
-                                            style: TextStyle(
-                                                color: data['bypass'] == null
-                                                    ? Colors.black
-                                                    : Colors.red),
-                                            children: [
-                                              TextSpan(
-                                                text: data['name'],
-                                              ),
-                                              data['bypass'] != null
-                                                  ? WidgetSpan(
-                                                      child:
-                                                          Transform.translate(
-                                                        offset: const Offset(
-                                                            0.0, -7.0),
-                                                        child: Text(
-                                                          data['bypass'] == 2
-                                                              ? '  LEBIH'
-                                                              : '  KURANG',
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 9,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .red),
+                                                          ?.indexOf('@')))) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: Text(
+                                                          "${data['name']}"),
+                                                      content: const Text(
+                                                          "Apakah mau di hapus?"),
+                                                      actions: [
+                                                        TextButton(
+                                                          child: const Text(
+                                                              "Tidak"),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
                                                         ),
-                                                      ),
-                                                    )
-                                                  : WidgetSpan(
-                                                      child: Container())
-                                            ],
+                                                        TextButton(
+                                                          child:
+                                                              const Text("Ya"),
+                                                          onPressed: () {
+                                                            // Removes that item the list on swipwe
+                                                            setState(() {
+                                                              firestoreService
+                                                                  .delete(
+                                                                      docID);
+                                                            });
+
+                                                            // Then show a snackbar.
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                                    const SnackBar(
+                                                                        content:
+                                                                            Text('Telah di hapus')));
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              } else {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                          'Tidak ada akses'),
+                                                      content: const Text(
+                                                          "Harap Hubungi Admin"),
+                                                      actions: [
+                                                        TextButton(
+                                                          child:
+                                                              const Text("Ok"),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              }
+                                            },
+                                            backgroundColor:
+                                                const Color(0xFFFE4A49),
+                                            foregroundColor: Colors.white,
+                                            icon: Icons.delete,
+                                            label: 'Hapus',
                                           ),
-                                        ),
-                                        subtitle: Text(DateFormat('HH:mm')
-                                            .format(
-                                                DateFormat("dd/MM/yyyy HH:mm")
-                                                    .parse(data['date']))),
-                                        trailing: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  data['status'] == 1
-                                                      ? Colors.blueAccent
-                                                      : data['status'] == 2
-                                                          ? Colors.orangeAccent
-                                                          : Colors.redAccent),
-                                          onPressed: () {
+                                        ],
+                                      ),
+                                      child: Container(
+                                        color: data['attempt'] == 0
+                                            ? Colors.redAccent
+                                            : null,
+                                        child: ListTile(
+                                          onTap: () {
                                             openNoteBox(
                                                 docId: docID,
                                                 data: data,
@@ -891,8 +923,67 @@ class _HomeViewState extends State<HomeView> {
                                                         vm.user?.email
                                                             ?.indexOf('@')));
                                           },
-                                          child: Text(Helper()
-                                              .convertStatus(data['status'])),
+                                          title: RichText(
+                                            text: TextSpan(
+                                              style: TextStyle(
+                                                  color: data['bypass'] == null
+                                                      ? Colors.black
+                                                      : Colors.red),
+                                              children: [
+                                                TextSpan(
+                                                  text: data['name'],
+                                                ),
+                                                data['bypass'] != null
+                                                    ? WidgetSpan(
+                                                        child:
+                                                            Transform.translate(
+                                                          offset: const Offset(
+                                                              0.0, -7.0),
+                                                          child: Text(
+                                                            data['bypass'] == 2
+                                                                ? '  LEBIH'
+                                                                : '  KURANG',
+                                                            style: const TextStyle(
+                                                                fontSize: 9,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color:
+                                                                    Colors.red),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : WidgetSpan(
+                                                        child: Container())
+                                              ],
+                                            ),
+                                          ),
+                                          subtitle: Text(DateFormat('HH:mm')
+                                              .format(
+                                                  DateFormat("dd/MM/yyyy HH:mm")
+                                                      .parse(data['date']))),
+                                          trailing: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    data['status'] == 1
+                                                        ? Colors.blueAccent
+                                                        : data['status'] == 2
+                                                            ? Colors
+                                                                .orangeAccent
+                                                            : Colors.redAccent),
+                                            onPressed: () {
+                                              openNoteBox(
+                                                  docId: docID,
+                                                  data: data,
+                                                  username: vm.user?.email
+                                                      ?.substring(
+                                                          0,
+                                                          vm.user?.email
+                                                              ?.indexOf('@')));
+                                            },
+                                            child: Text(Helper()
+                                                .convertStatus(data['status'])),
+                                          ),
                                         ),
                                       ),
                                     );
