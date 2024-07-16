@@ -20,7 +20,9 @@ class HomeViewModel extends BaseViewModel {
     user = FirebaseAuth.instance.currentUser;
 
     await updateDate(
-        DateTime.now().subtract(const Duration(days: 7)), DateTime.now());
+        DateTime.now().subtract(const Duration(days: 7)),
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day,
+            23, 59));
   }
 
   void signOut() async {
