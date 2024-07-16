@@ -19,8 +19,10 @@ class HomeViewModel extends BaseViewModel {
   void initialize() async {
     user = FirebaseAuth.instance.currentUser;
 
+    DateTime startDate = DateTime.now().subtract(const Duration(days: 7));
+
     await updateDate(
-        DateTime.now().subtract(const Duration(days: 7)),
+        DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day,
             23, 59));
   }

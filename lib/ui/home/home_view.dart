@@ -3,7 +3,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:stacked/stacked.dart';
 import 'package:wishlaundry/components/my_text_field.dart';
@@ -62,7 +61,7 @@ class _HomeViewState extends State<HomeView> {
   _onSearchChanged() {
     if (_searchController.text == '' ||
         (_searchController.text.length >= 3 &&
-            _searchController.text.length <= 5)) {
+            _searchController.text.length <= 6)) {
       setState(() {});
     }
   }
@@ -715,9 +714,12 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(DateFormat('dd MMM yy')
-                          .format(vm.selectedStartDate!)),
-                      Text(DateFormat('dd MMM yy').format(vm.selectedEndDate!)),
+                      Text(
+                        DateFormat('dd MMM yy').format(vm.selectedStartDate!),
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      Text(DateFormat('dd MMM yy').format(vm.selectedEndDate!),
+                          style: TextStyle(fontSize: 12)),
                     ],
                   ),
                   Padding(
