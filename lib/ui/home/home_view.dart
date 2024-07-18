@@ -45,10 +45,6 @@ class _HomeViewState extends State<HomeView> {
 
   int? attempts;
 
-  List _allResults = [];
-  List _resultList = [];
-  var showResult = [];
-
   bool isSearched = false;
 
   @override
@@ -66,35 +62,8 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  // searchResultList() {
-  //   var showResult = [];
-  //   isSearched = true;
-  //   if (_searchController.text != '' && _searchController.text.length >= 3) {
-  //     for (var clientSnapShot in _allResults) {
-  //       var name = clientSnapShot['name'].toString().toLowerCase();
-  //       if (name.contains(_searchController.text.toLowerCase())) {
-  //         showResult.add(clientSnapShot);
-  //       }
-  //     }
-  //   } else {
-  //     showResult = List.from(_allResults);
-  //   }
-
-  //   setState(() {
-  //     _resultList = showResult;
-  //   });
-  // }
-
   Future<void> refreshList() async {
-    // var data = await FirebaseFirestore.instance
-    // .collection('transaction')
-    // .orderBy('date', descending: true)
-    // .get();
-
-    setState(() {
-      // _allResults = data.docs;
-    });
-    // searchResultList();
+    setState(() {});
   }
 
   @override
@@ -716,10 +685,10 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       Text(
                         DateFormat('dd MMM yy').format(vm.selectedStartDate!),
-                        style: TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12),
                       ),
                       Text(DateFormat('dd MMM yy').format(vm.selectedEndDate!),
-                          style: TextStyle(fontSize: 12)),
+                          style: const TextStyle(fontSize: 12)),
                     ],
                   ),
                   Padding(
@@ -735,7 +704,7 @@ class _HomeViewState extends State<HomeView> {
                           firstDate: DateTime.now()
                               .subtract(const Duration(days: 365)),
                         );
-                        if (picked != null && picked != null) {
+                        if (picked != null) {
                           await vm.updateDate(
                               picked.start,
                               DateTime(picked.end.year, picked.end.month,
@@ -805,7 +774,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                   ),
-                  Expanded(
+                  Flexible(
                       //display as a list
                       child: StreamBuilder<QuerySnapshot>(
                           stream: (_searchController.text != "")

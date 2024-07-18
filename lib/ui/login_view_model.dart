@@ -37,10 +37,10 @@ class LoginViewModel extends BaseViewModel {
       await _profileService.initialize(forceRefresh: true);
       await _appStateManager.completeLogin();
     } else {
-      print('error occurred');
+      debugPrint('error occurred');
     }
   }
-  
+
   @override
   void dispose() {
     _fadeTransitionController.dispose();

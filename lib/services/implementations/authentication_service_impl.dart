@@ -5,7 +5,7 @@ import 'package:wishlaundry/localizations/locale_keys.g.dart';
 import 'package:wishlaundry/services/interfaces/authentication_service.dart';
 
 class AuthenticationServiceImpl implements AuthenticationService {
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Future<User?> signInWithEmailAndPassword(
