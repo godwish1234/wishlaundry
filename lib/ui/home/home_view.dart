@@ -592,7 +592,7 @@ class _HomeViewState extends State<HomeView> {
                 docId == null
                     ? Container()
                     : const SizedBox(
-                        height: 15,
+                        height: 10,
                       ),
                 data?['status'] != 3
                     ? Row(
@@ -636,9 +636,11 @@ class _HomeViewState extends State<HomeView> {
                                       child: Text(LocaleKeys.bypass.tr())),
                                 )
                               : Container(),
-                          const SizedBox(
-                            width: 10,
-                          ),
+                          admins.contains(username) && data?['status'] != null
+                              ? const SizedBox(
+                                  width: 10,
+                                )
+                              : Container(),
                           Expanded(
                             child: ElevatedButton(
                                 onPressed: data?['attempt'] == 0
