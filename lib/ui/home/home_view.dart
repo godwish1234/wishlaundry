@@ -352,8 +352,7 @@ class _HomeViewState extends State<HomeView> {
                                   if (value == '') {
                                     value = "0";
                                   }
-                                  if (value != data['brasCount'].toString() &&
-                                      data['brasCount'] != 0) {
+                                  if (value != data['brasCount'].toString()) {
                                     return LocaleKeys.form_bras_match.tr();
                                   }
                                   return null;
@@ -372,8 +371,7 @@ class _HomeViewState extends State<HomeView> {
                                   if (value == '') {
                                     value = "0";
                                   }
-                                  if (value != data['socksCount'].toString() &&
-                                      data['socksCount'] != 0) {
+                                  if (value != data['socksCount'].toString()) {
                                     return LocaleKeys.form_socks_match.tr();
                                   }
                                   return null;
@@ -392,8 +390,7 @@ class _HomeViewState extends State<HomeView> {
                                   if (value == '') {
                                     value = "0";
                                   }
-                                  if (value != data['othersCount'].toString() &&
-                                      data['othersCount'] != 0) {
+                                  if (value != data['othersCount'].toString()) {
                                     return LocaleKeys.form_others_match.tr();
                                   }
                                   return null;
