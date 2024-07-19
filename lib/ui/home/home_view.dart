@@ -41,7 +41,7 @@ class _HomeViewState extends State<HomeView> {
   // firestore
   final FirestoreServiceImpl firestoreService = FirestoreServiceImpl();
 
-  final _formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   int? attempts;
 
@@ -1024,7 +1024,9 @@ class _HomeViewState extends State<HomeView> {
                                               style: TextStyle(
                                                   color: data['bypass'] == null
                                                       ? Colors.black
-                                                      : Colors.red),
+                                                      : data['bypass'] == 2
+                                                          ? Colors.green
+                                                          : Colors.red),
                                               children: [
                                                 TextSpan(
                                                   text: data['name'],
@@ -1039,13 +1041,18 @@ class _HomeViewState extends State<HomeView> {
                                                             data['bypass'] == 2
                                                                 ? '  LEBIH'
                                                                 : '  KURANG',
-                                                            style: const TextStyle(
+                                                            style: TextStyle(
                                                                 fontSize: 9,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
-                                                                color:
-                                                                    Colors.red),
+                                                                color: data[
+                                                                            'bypass'] ==
+                                                                        2
+                                                                    ? Colors
+                                                                        .green
+                                                                    : Colors
+                                                                        .red),
                                                           ),
                                                         ),
                                                       )
