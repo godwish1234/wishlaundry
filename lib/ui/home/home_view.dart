@@ -788,13 +788,17 @@ class _HomeViewState extends State<HomeView> {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               List notesList = snapshot.data!.docs;
+                              notesList.removeWhere((element) =>
+                                  DateFormat("dd/MM/yyyy HH:mm")
+                                      .parse(element['date'])
+                                      .isBefore(vm.selectedStartDate!));
                               return GroupedListView(
                                   elements: notesList,
                                   groupBy: (element) => DateFormat('dd/MM/yyyy')
                                       .format(DateFormat("dd/MM/yyyy")
                                           .parse(element['date'])),
                                   groupComparator: (value1, value2) =>
-                                      value2.compareTo(value1),
+                                      value1.compareTo(value2),
                                   itemComparator: (item1, item2) =>
                                       DateFormat('dd/MM/yyyy')
                                           .parse(item1['date'])
@@ -804,7 +808,8 @@ class _HomeViewState extends State<HomeView> {
                                                 .parse(item2['date'])
                                                 .toString(),
                                           ),
-                                  order: GroupedListOrder.ASC,
+                                  sort: false,
+                                  order: GroupedListOrder.DESC,
                                   useStickyGroupSeparators: true,
                                   groupSeparatorBuilder: (String value) =>
                                       Padding(

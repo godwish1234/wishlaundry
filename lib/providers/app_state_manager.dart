@@ -5,7 +5,6 @@ import 'package:wishlaundry/services/interfaces/user_settings_service.dart';
 
 class AppStateManager extends ChangeNotifier {
   final _userSettingsService = GetIt.I<UserSettingsService>();
-  // final _internetConnectivityProvider = GetIt.I<InternetConnectivityProvider>();
 
   var _currentScreen = AppLinkLocationKeys.home;
   String get currentScreen => _currentScreen;

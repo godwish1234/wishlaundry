@@ -68,7 +68,7 @@ class FirestoreServiceImpl implements FirestoreService {
         .where("name", isGreaterThanOrEqualTo: searchString)
         .where("name", isLessThanOrEqualTo: "$searchString\uf7ff")
         .orderBy('name')
-        .orderBy('date', descending: true)
+        // .orderBy('date', descending: true)
         .snapshots();
     return notesStream;
   }
