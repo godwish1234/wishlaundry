@@ -8,6 +8,8 @@ class HomeViewModel extends BaseViewModel {
   static final _appStateManager = GetIt.instance.get<AppStateManager>();
   // firestore
   static final firestoreService = GetIt.instance.get<FirestoreService>();
+  static final notificationService = GetIt.instance.get<NotificationService>();
+
   User? user;
 
   DateTime? _selectedStartDate;
@@ -18,6 +20,10 @@ class HomeViewModel extends BaseViewModel {
 
   void initialize() async {
     user = FirebaseAuth.instance.currentUser;
+    // await notificationService.listenNotifications();
+
+    // final token = await notificationService.getToken();
+    // print(token);
 
     DateTime startDate = DateTime.now().subtract(const Duration(days: 7));
 

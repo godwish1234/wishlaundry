@@ -5,13 +5,8 @@ import 'package:wishlaundry/providers/implementations/user_settings_provider_imp
 import 'package:wishlaundry/providers/interfaces/user_settings_provider.dart';
 import 'package:wishlaundry/repository/implementations/user_settings_repository_impl.dart';
 import 'package:wishlaundry/repository/interfaces/user_settings_repository.dart';
-import 'package:wishlaundry/services/implementations/authentication_service_impl.dart';
-import 'package:wishlaundry/services/implementations/profile_service_impl.dart';
-import 'package:wishlaundry/services/implementations/user_settings_service_impl.dart';
-import 'package:wishlaundry/services/interfaces/authentication_service.dart';
-import 'package:wishlaundry/services/interfaces/user_settings_service.dart';
+import 'package:wishlaundry/services/services.dart';
 
-import '../services/interfaces/profile_service.dart';
 final GetIt serviceLocator = GetIt.instance;
 
 Future setupServiceLocator(
@@ -39,4 +34,6 @@ Future setupServiceLocator(
   // Repositories
   // Services
   serviceLocator.registerSingleton<ProfileService>(ProfileServiceImpl());
+  serviceLocator
+      .registerSingleton<NotificationService>(NotificationServiceImpl());
 }

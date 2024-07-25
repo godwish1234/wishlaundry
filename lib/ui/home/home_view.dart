@@ -62,9 +62,9 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  Future<void> refreshList() async {
-    setState(() {});
-  }
+  // Future<void> refreshList() async {
+  //   setState(() {});
+  // }
 
   @override
   void dispose() {
@@ -73,11 +73,11 @@ class _HomeViewState extends State<HomeView> {
     super.dispose();
   }
 
-  @override
-  void didChangeDependencies() {
-    refreshList();
-    super.didChangeDependencies();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   refreshList();
+  //   super.didChangeDependencies();
+  // }
 
   void validateAndSave(String? docId, Map<String, dynamic>? data,
       String? username, int? bypass) {
@@ -774,42 +774,43 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ),
                   Flexible(
-                      //display as a list
-                      child: StreamBuilder<QuerySnapshot>(
-                          stream: (_searchController.text != "")
-                              ? firestoreService.searchStream(
-                                  _searchController.text.toUpperCase(),
-                                )
-                              : firestoreService.getNotesStream(
-                                  DateFormat('dd/MM/yyyy HH:mm')
-                                      .format(vm.selectedStartDate!),
-                                  DateFormat('dd/MM/yyyy HH:mm')
-                                      .format(vm.selectedEndDate!)),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              List notesList = snapshot.data!.docs;
-                              notesList.removeWhere((element) =>
-                                  DateFormat("dd/MM/yyyy HH:mm")
-                                      .parse(element['date'])
-                                      .isBefore(vm.selectedStartDate!));
-                              return GroupedListView(
+                    child: StreamBuilder<QuerySnapshot>(
+                        stream: (_searchController.text != "")
+                            ? firestoreService.searchStream(
+                                _searchController.text.toUpperCase(),
+                              )
+                            : firestoreService.getNotesStream(
+                                DateFormat('dd/MM/yyyy HH:mm')
+                                    .format(vm.selectedStartDate!),
+                                DateFormat('dd/MM/yyyy HH:mm')
+                                    .format(vm.selectedEndDate!)),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List notesList = snapshot.data!.docs;
+                            notesList.removeWhere((element) =>
+                                DateFormat("dd/MM/yyyy HH:mm")
+                                    .parse(element['date'])
+                                    .isBefore(vm.selectedStartDate!));
+                            return SingleChildScrollView(
+                              child: GroupedListView(
+                                  shrinkWrap: true,
                                   elements: notesList,
                                   groupBy: (element) => DateFormat('dd/MM/yyyy')
-                                      .format(DateFormat("dd/MM/yyyy")
+                                      .format(DateFormat("dd/MM/yyyy HH:mm")
                                           .parse(element['date'])),
                                   groupComparator: (value1, value2) =>
                                       value1.compareTo(value2),
                                   itemComparator: (item1, item2) =>
-                                      DateFormat('dd/MM/yyyy')
+                                      DateFormat('dd/MM/yyyy HH:mm')
                                           .parse(item1['date'])
                                           .toString()
                                           .compareTo(
-                                            DateFormat('dd/MM/yyyy')
+                                            DateFormat('dd/MM/yyyy HH:mm')
                                                 .parse(item2['date'])
                                                 .toString(),
                                           ),
                                   sort: false,
-                                  order: GroupedListOrder.DESC,
+                                  order: GroupedListOrder.ASC,
                                   useStickyGroupSeparators: true,
                                   groupSeparatorBuilder: (String value) =>
                                       Padding(
@@ -1097,11 +1098,13 @@ class _HomeViewState extends State<HomeView> {
                                         ),
                                       ),
                                     );
-                                  });
-                            } else {
-                              return Text(LocaleKeys.no_data.tr());
-                            }
-                          })),
+                                  }),
+                            );
+                          } else {
+                            return Text(LocaleKeys.no_data.tr());
+                          }
+                        }),
+                  ),
                 ],
               ));
         });
