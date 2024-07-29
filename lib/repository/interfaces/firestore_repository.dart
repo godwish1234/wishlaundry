@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 
-abstract class FirestoreService {
-  Future<FirebaseApp> initializeFirebase();
+abstract class FirestoreRepository {
   Future<void> addtransaction(
       String name,
       String date,

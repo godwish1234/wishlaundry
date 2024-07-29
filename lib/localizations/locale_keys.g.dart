@@ -2,6 +2,7 @@
 
 abstract class  LocaleKeys {
   static const home_nav = 'home_nav';
+  static const member_nav = 'member_nav';
   static const form_invalid = 'form_invalid';
   static const form_name_empty = 'form_name_empty';
   static const form_date_empty = 'form_date_empty';
@@ -36,6 +37,11 @@ abstract class  LocaleKeys {
   static const submit = 'submit';
   static const login_validation = 'login_validation';
   static const add = 'add';
+  static const cancel = 'cancel';
   static const search = 'search';
+  static const data_membership = 'data_membership';
+  static const add_member = 'add_member';
+  static const member_type = 'member_type';
+  static const balance = 'balance';
 
 }

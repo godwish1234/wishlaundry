@@ -1,5 +1,6 @@
 {
   "home_nav": "Home",
+  "member_nav": "Member",
   "form_invalid": "Invalid Form",
   "form_name_empty": "Name cannot be blank",
   "form_date_empty": "Date cannot be blank",
@@ -34,5 +35,10 @@
   "submit": "Submit",
   "login_validation": "Wrong email/password",
   "add": "Add",
-  "search": "Search"
+  "cancel": "Cancel",
+  "search": "Search",
+  "data_membership": "Data Membership",
+  "add_member": "Add Member",
+  "member_type": "Member type",
+  "balance": "Balance"
 }

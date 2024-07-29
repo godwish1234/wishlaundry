@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get_it/get_it.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:stacked/stacked.dart';
 import 'package:wishlaundry/components/my_text_field.dart';
@@ -11,6 +12,7 @@ import 'package:wishlaundry/helpers/helper.dart';
 import 'package:wishlaundry/localizations/locale_keys.g.dart';
 import 'package:wishlaundry/routing/app_link_location_keys.dart';
 import 'package:wishlaundry/services/services.dart';
+import 'package:wishlaundry/ui/components/drawer.dart';
 import 'package:wishlaundry/ui/home/home_view_model.dart';
 
 class HomeView extends StatefulWidget {
@@ -40,6 +42,8 @@ class _HomeViewState extends State<HomeView> {
 
   // firestore
   final FirestoreServiceImpl firestoreService = FirestoreServiceImpl();
+  static final authenticationService =
+      GetIt.instance.get<AuthenticationService>();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -73,19 +77,13 @@ class _HomeViewState extends State<HomeView> {
     super.dispose();
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   refreshList();
-  //   super.didChangeDependencies();
-  // }
-
   void validateAndSave(String? docId, Map<String, dynamic>? data,
       String? username, int? bypass) {
     final form = _formKey.currentState;
 
     if (docId == null) {
       if (form!.validate()) {
-        firestoreService.addNote(
+        firestoreService.addtransaction(
             nameTextController.text.toUpperCase(),
             dateTextController.text,
             int.parse(clothesTextController.text),
@@ -104,7 +102,6 @@ class _HomeViewState extends State<HomeView> {
             '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
 
         Navigator.pop(context);
-        // getClientStream();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(LocaleKeys.form_invalid.tr())));
@@ -133,7 +130,6 @@ class _HomeViewState extends State<HomeView> {
                 '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}',
                 bypass ?? 0);
             Navigator.pop(context);
-            // getClientStream();
             break;
           case 2:
             firestoreService.forceUpdate(
@@ -163,13 +159,13 @@ class _HomeViewState extends State<HomeView> {
         if (form!.validate()) {
           switch (data?['status']) {
             case 1:
-              firestoreService.updateNote(docId, 2, 'dry',
+              firestoreService.updatetransaction(docId, 2, 'dry',
                   '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
               Navigator.pop(context);
               // getClientStream();
               break;
             case 2:
-              firestoreService.updateNote(docId, 3, 'pack',
+              firestoreService.updatetransaction(docId, 3, 'pack',
                   '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
               Navigator.pop(context);
               // getClientStream();
@@ -200,7 +196,7 @@ class _HomeViewState extends State<HomeView> {
                           child: Text(LocaleKeys.close.tr()))
                     ],
                   ));
-          firestoreService.updateNoteIncorrectInput(docId, attempts!);
+          firestoreService.updatetransactionIncorrectInput(docId, attempts!);
 
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(LocaleKeys.form_invalid.tr())));
@@ -209,7 +205,7 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  void openNoteBox(
+  void openTransactionDialog(
       {String? docId, Map<String, dynamic>? data, String? username}) {
     nameTextController.clear();
     dateTextController.clear();
@@ -719,37 +715,15 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ],
               ),
-              drawer: Drawer(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Text(
-                            '${LocaleKeys.welcome.tr()} ${vm.user?.email?.substring(0, vm.user?.email?.indexOf('@'))}'),
-                      ),
-                      Align(
-                        alignment: FractionalOffset.bottomCenter,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                child: Text(LocaleKeys.signout.tr()),
-                                onPressed: () async {
-                                  vm.signOut();
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              drawer: CustomDrawer(
+                username:
+                    vm.user?.email?.substring(0, vm.user?.email?.indexOf('@')),
+                signOut: () async => authenticationService.signOut(),
               ),
               floatingActionButton: FloatingActionButton(
+                heroTag: 'btnHome',
                 onPressed: () {
-                  openNoteBox(
+                  openTransactionDialog(
                       username: vm.user?.email
                           ?.substring(0, vm.user?.email?.indexOf('@')));
                 },
@@ -779,22 +753,24 @@ class _HomeViewState extends State<HomeView> {
                             ? firestoreService.searchStream(
                                 _searchController.text.toUpperCase(),
                               )
-                            : firestoreService.getNotesStream(
+                            : firestoreService.getTransactionStream(
                                 DateFormat('dd/MM/yyyy HH:mm')
                                     .format(vm.selectedStartDate!),
                                 DateFormat('dd/MM/yyyy HH:mm')
                                     .format(vm.selectedEndDate!)),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            List notesList = snapshot.data!.docs;
-                            notesList.removeWhere((element) =>
+                            List transactionList = snapshot.data!.docs;
+                            transactionList.removeWhere((element) =>
                                 DateFormat("dd/MM/yyyy HH:mm")
                                     .parse(element['date'])
                                     .isBefore(vm.selectedStartDate!));
                             return SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
                               child: GroupedListView(
+                                  physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
-                                  elements: notesList,
+                                  elements: transactionList,
                                   groupBy: (element) => DateFormat('dd/MM/yyyy')
                                       .format(DateFormat("dd/MM/yyyy HH:mm")
                                           .parse(element['date'])),
@@ -827,7 +803,7 @@ class _HomeViewState extends State<HomeView> {
                                   indexedItemBuilder:
                                       (context, dynamic element, index) {
                                     DocumentSnapshot document =
-                                        notesList[index];
+                                        transactionList[index];
                                     String docID = document.id;
 
                                     Map<String, dynamic> data =
@@ -879,7 +855,7 @@ class _HomeViewState extends State<HomeView> {
                                                             // Removes that item the list on swipwe
                                                             setState(() {
                                                               firestoreService
-                                                                  .updateNoteIncorrectInput(
+                                                                  .updatetransactionIncorrectInput(
                                                                       docID, 2);
                                                             });
 
@@ -1018,7 +994,7 @@ class _HomeViewState extends State<HomeView> {
                                             : null,
                                         child: ListTile(
                                           onTap: () {
-                                            openNoteBox(
+                                            openTransactionDialog(
                                                 docId: docID,
                                                 data: data,
                                                 username: vm.user?.email
@@ -1083,7 +1059,7 @@ class _HomeViewState extends State<HomeView> {
                                                                 .orangeAccent
                                                             : Colors.redAccent),
                                             onPressed: () {
-                                              openNoteBox(
+                                              openTransactionDialog(
                                                   docId: docID,
                                                   data: data,
                                                   username: vm.user?.email

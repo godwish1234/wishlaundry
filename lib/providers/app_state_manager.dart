@@ -16,6 +16,7 @@ class AppStateManager extends ChangeNotifier {
   }
 
   bool get homePage => _currentScreen == AppLinkLocationKeys.home;
+  bool get membershipPage => _currentScreen == AppLinkLocationKeys.membership;
 
   bool get isDarkMode => _userSettingsService.isDarkMode();
 
@@ -52,6 +53,11 @@ class AppStateManager extends ChangeNotifier {
 
   void showHomePage() {
     _currentScreen = AppLinkLocationKeys.home;
+    notifyListeners();
+  }
+
+  void showMembershipPage() {
+    _currentScreen = AppLinkLocationKeys.membership;
     notifyListeners();
   }
 

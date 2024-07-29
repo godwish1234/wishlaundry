@@ -16,6 +16,7 @@ class CodegenLoader extends AssetLoader{
 
   static const Map<String,dynamic> id_ID = {
   "home_nav": "Beranda",
+  "member_nav": "Member",
   "form_invalid": "Form tidak valid",
   "form_name_empty": "Nama tidak boleh kosong",
   "form_date_empty": "Tanggal tidak boleh kosong",
@@ -50,10 +51,16 @@ class CodegenLoader extends AssetLoader{
   "submit": "Kirim",
   "login_validation": "Alamat email/Kata sandi salah",
   "add": "Tambah",
-  "search": "Cari"
+  "cancel": "Batal",
+  "search": "Cari",
+  "data_membership": "Data Membership",
+  "add_member": "Tambah Member",
+  "member_type": "Tipe member",
+  "balance": "Saldo"
 };
 static const Map<String,dynamic> en_US = {
   "home_nav": "Home",
+  "member_nav": "Member",
   "form_invalid": "Invalid Form",
   "form_name_empty": "Name cannot be blank",
   "form_date_empty": "Date cannot be blank",
@@ -88,7 +95,12 @@ static const Map<String,dynamic> en_US = {
   "submit": "Submit",
   "login_validation": "Wrong email/password",
   "add": "Add",
-  "search": "Search"
+  "cancel": "Cancel",
+  "search": "Search",
+  "data_membership": "Data Membership",
+  "add_member": "Add Member",
+  "member_type": "Member type",
+  "balance": "Balance"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"id_ID": id_ID, "en_US": en_US};
 }

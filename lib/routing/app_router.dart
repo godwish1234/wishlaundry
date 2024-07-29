@@ -4,8 +4,8 @@ import 'package:get_it/get_it.dart';
 import 'package:wishlaundry/providers/app_state_manager.dart';
 import 'package:wishlaundry/routing/app_link.dart';
 import 'package:wishlaundry/routing/app_link_location_keys.dart';
-import 'package:wishlaundry/ui/home/home_view.dart';
 import 'package:wishlaundry/ui/login_view.dart';
+import 'package:wishlaundry/ui/scaffold_view.dart';
 
 class AppRouter extends RouterDelegate<AppLink>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -35,7 +35,7 @@ class AppRouter extends RouterDelegate<AppLink>
         if (!appStateManager.isLoggedIn)
           LoginView.page()
         else ...[
-          HomeView.page(),
+          ScaffoldView.page(),
         ],
       ],
     );

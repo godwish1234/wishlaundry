@@ -1,5 +1,6 @@
 {
   "home_nav": "Beranda",
+  "member_nav": "Member",
   "form_invalid": "Form tidak valid",
   "form_name_empty": "Nama tidak boleh kosong",
   "form_date_empty": "Tanggal tidak boleh kosong",
@@ -34,5 +35,10 @@
   "submit": "Kirim",
   "login_validation": "Alamat email/Kata sandi salah",
   "add": "Tambah",
-  "search": "Cari"
+  "cancel": "Batal",
+  "search": "Cari",
+  "data_membership": "Data Membership",
+  "add_member": "Tambah Member",
+  "member_type": "Tipe member",
+  "balance": "Saldo"
 }

@@ -30,8 +30,8 @@ void main() {
         await EasyLocalization.ensureInitialized();
         await Firebase.initializeApp(
             options: DefaultFirebaseOptions.currentPlatform);
-        final notificationService = NotificationServiceImpl();
-        await notificationService.listenNotifications();
+        // final notificationService = NotificationServiceImpl();
+        // await notificationService.listenNotifications();
 
         Directory? applicationDocumentsDirectory;
 
