@@ -18,31 +18,19 @@ class MembershipViewModel extends BaseViewModel {
 
   Future addMember(String name, int balance, int type) async {
     List transactions = [];
-    transactions.add({
-      'price': balance,
-      'product': 1,
-      'timestamp': Timestamp.now()
-    });
+    transactions
+        .add({'price': balance, 'product': 1, 'timestamp': Timestamp.now()});
     await membershipService.addMember(
         name,
         balance,
         type,
         transactions,
         DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
-        DateFormat('dd/MM/yyyy HH:mm')
-            .format(DateTime.now().add(const Duration(days: 90))));
-    notifyListeners();
-  }
-
-  Future updateMemberData(String docID, int balance, int price, String product,
-      List transactions) async {
-    transactions.add(
-        {'price': price, 'product': product, 'timestamp': Timestamp.now()});
-    await membershipService.updateMemberData(
-      docID,
-      balance,
-      transactions,
-    );
+        type == 1
+            ? DateFormat('dd/MM/yyyy HH:mm')
+                .format(DateTime.now().add(const Duration(days: 60)))
+            : DateFormat('dd/MM/yyyy HH:mm')
+                .format(DateTime.now().add(const Duration(days: 120))));
     notifyListeners();
   }
 

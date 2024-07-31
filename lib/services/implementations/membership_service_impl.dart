@@ -25,8 +25,8 @@ class MembershipServiceImpl implements MembershipService {
 
   @override
   Future<void> updateMemberData(
-      String docID, int balance, List transaction) async {
-    return _membershipRepository.updateMemberData(docID, balance, transaction);
+      String docID, int balance, List transaction, String dateCreated, String dateExpiry) async {
+    return _membershipRepository.updateMemberData(docID, balance, transaction, dateCreated, dateExpiry);
   }
 
   @override

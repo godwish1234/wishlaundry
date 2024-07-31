@@ -51,7 +51,14 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                               : (vm.data?['balance'] + 500000),
                           vm.data?['type'] == 1 ? 200000 : 500000,
                           product,
-                          vm.data?['transactions']);
+                          vm.data?['transactions'],
+                          DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
+                          vm.data?['type'] == 1
+                              ? DateFormat('dd/MM/yyyy HH:mm').format(
+                                  DateTime.now().add(const Duration(days: 60)))
+                              : DateFormat('dd/MM/yyyy HH:mm').format(
+                                  DateTime.now()
+                                      .add(const Duration(days: 120))));
 
                       Navigator.of(context).pop();
                     },
@@ -81,14 +88,7 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                                 return 'Saldo tidak cukup';
                               }
                               return null;
-                            }
-
-                            //  (value) => value == ''
-                            //     ? LocaleKeys.form_price_empty.tr()
-                            //     : int.parse(value!) > vm.data?['balance']
-                            //         ? 'Saldo tidak cukup'
-                            //         : null),
-                            ))
+                            }))
                   ],
                 ),
                 actions: <Widget>[
@@ -105,12 +105,15 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         await vm.updateMemberData(
-                            vm.data?['balance'],
-                            (vm.data?['balance'] -
-                                int.parse(priceController.text)),
-                            int.parse(priceController.text),
-                            product,
-                            vm.data?['transactions']);
+                          vm.data?['balance'],
+                          (vm.data?['balance'] -
+                              int.parse(priceController.text)),
+                          int.parse(priceController.text),
+                          product,
+                          vm.data?['transactions'],
+                          vm.data?['dateCreated'],
+                          vm.data?['dateExpiry'],
+                        );
 
                         Navigator.of(context).pop();
                       }
@@ -167,9 +170,13 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.redAccent),
-                                      onPressed: () {
-                                        openDialog(vm, 2);
-                                      },
+                                      onPressed: DateFormat("dd/MM/yyyy")
+                                              .parse(vm.data?['dateExpiry'])
+                                              .isAfter(DateTime.now())
+                                          ? () {
+                                              openDialog(vm, 2);
+                                            }
+                                          : null,
                                       child: Text(LocaleKeys.purchase.tr()),
                                     ),
                                   ),
