@@ -40,8 +40,14 @@ abstract class  LocaleKeys {
   static const cancel = 'cancel';
   static const search = 'search';
   static const data_membership = 'data_membership';
+  static const membership_detail = 'membership_detail';
   static const add_member = 'add_member';
   static const member_type = 'member_type';
   static const balance = 'balance';
+  static const form_price_empty = 'form_price_empty';
+  static const price = 'price';
+  static const top_up = 'top_up';
+  static const purchase = 'purchase';
+  static const question_topup = 'question_topup';
 
 }

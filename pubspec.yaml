@@ -111,6 +111,7 @@ dependencies:
   flutter_slidable: ^3.1.1
   toast: ^0.3.0
   firebase_messaging: ^14.7.10
+  persistent_bottom_nav_bar: ^6.2.1
 
 dev_dependencies:
   flutter_test:

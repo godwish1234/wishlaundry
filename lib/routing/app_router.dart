@@ -5,6 +5,7 @@ import 'package:wishlaundry/providers/app_state_manager.dart';
 import 'package:wishlaundry/routing/app_link.dart';
 import 'package:wishlaundry/routing/app_link_location_keys.dart';
 import 'package:wishlaundry/ui/login_view.dart';
+import 'package:wishlaundry/ui/membership/membership_detail_view.dart';
 import 'package:wishlaundry/ui/scaffold_view.dart';
 
 class AppRouter extends RouterDelegate<AppLink>
@@ -36,6 +37,7 @@ class AppRouter extends RouterDelegate<AppLink>
           LoginView.page()
         else ...[
           ScaffoldView.page(),
+          if (appStateManager.membershipDetailPage) MembershipDetailView.page()
         ],
       ],
     );
@@ -55,7 +57,6 @@ class AppRouter extends RouterDelegate<AppLink>
   /// need to provide a corresponding AppLink object
   /// that the RouteInformationParser utilizes
   AppLink getCurrentPath() {
-
     if (!appStateManager.isLoggedIn) {
       return AppLink(
         locationKey: AppLinkLocationKeys.login,
@@ -66,6 +67,16 @@ class AppRouter extends RouterDelegate<AppLink>
       return AppLink(
           locationKey: AppLinkLocationKeys.home,
           realPath: AppLinkLocationKeys.home);
+    }
+    if (appStateManager.membershipPage) {
+      return AppLink(
+          locationKey: AppLinkLocationKeys.membership,
+          realPath: AppLinkLocationKeys.membership);
+    }
+    if (appStateManager.membershipDetailPage) {
+      return AppLink(
+          locationKey: AppLinkLocationKeys.membershipDetail,
+          realPath: AppLinkLocationKeys.membershipDetail);
     }
 
     return AppLink(
@@ -80,7 +91,6 @@ class AppRouter extends RouterDelegate<AppLink>
   /// State if needed
   @override
   Future<void> setNewRoutePath(AppLink configuration) async {
-
     switch (configuration.locationKey) {
       case AppLinkLocationKeys.login:
         if (appStateManager.isLoggedIn) {

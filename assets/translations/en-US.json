@@ -38,7 +38,13 @@
   "cancel": "Cancel",
   "search": "Search",
   "data_membership": "Data Membership",
+  "membership_detail": "Membership Detail",
   "add_member": "Add Member",
   "member_type": "Member type",
-  "balance": "Balance"
+  "balance": "Balance",
+  "form_price_empty": "Price cannot be blank",
+  "price": "Price",
+  "top_up": "Topup",
+  "purchase": "Purchase",
+  "question_topup": "Do you want to topup?"
 }

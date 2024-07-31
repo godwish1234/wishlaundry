@@ -9,6 +9,9 @@ class AppStateManager extends ChangeNotifier {
   var _currentScreen = AppLinkLocationKeys.home;
   String get currentScreen => _currentScreen;
 
+  var _docID = "";
+  String get docID => _docID;
+
   var _loggedIn = false;
   bool get isLoggedIn => _loggedIn;
   set setIsLoggedIn(isLoggedIn) {
@@ -17,6 +20,8 @@ class AppStateManager extends ChangeNotifier {
 
   bool get homePage => _currentScreen == AppLinkLocationKeys.home;
   bool get membershipPage => _currentScreen == AppLinkLocationKeys.membership;
+  bool get membershipDetailPage =>
+      _currentScreen == AppLinkLocationKeys.membershipDetail;
 
   bool get isDarkMode => _userSettingsService.isDarkMode();
 
@@ -61,8 +66,18 @@ class AppStateManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  void showMembershipDetailPage(String docID) {
+    _currentScreen = AppLinkLocationKeys.membershipDetail;
+    setDocID(docID);
+    notifyListeners();
+  }
+
   DateTime getTimeNow() {
     DateTime dt = DateTime.now();
     return dt;
+  }
+
+  void setDocID(String docId) {
+    _docID = docId;
   }
 }

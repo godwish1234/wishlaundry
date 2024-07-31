@@ -12,14 +12,30 @@ class MembershipServiceImpl implements MembershipService {
   }
 
   @override
-  Future addMember(String name, int balance, int type, String dateCreated,
-      String dateExpiry) async {
+  Stream<QuerySnapshot> searchStream(String searchString) {
+    return _membershipRepository.searchStream(searchString);
+  }
+
+  @override
+  Future addMember(String name, int balance, int type, List transactions,
+      String dateCreated, String dateExpiry) async {
     return _membershipRepository.addMember(
-        name, balance, type, dateCreated, dateExpiry);
+        name, balance, type, transactions, dateCreated, dateExpiry);
+  }
+
+  @override
+  Future<void> updateMemberData(
+      String docID, int balance, List transaction) async {
+    return _membershipRepository.updateMemberData(docID, balance, transaction);
   }
 
   @override
   Future<void> delete(String docID) {
     return _membershipRepository.delete(docID);
+  }
+
+  @override
+  Future<void> getData(String docID) {
+    return _membershipRepository.getData(docID);
   }
 }

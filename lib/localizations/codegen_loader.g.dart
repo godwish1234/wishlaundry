@@ -54,9 +54,15 @@ class CodegenLoader extends AssetLoader{
   "cancel": "Batal",
   "search": "Cari",
   "data_membership": "Data Membership",
+  "membership_detail": "Membership Detil",
   "add_member": "Tambah Member",
   "member_type": "Tipe member",
-  "balance": "Saldo"
+  "balance": "Saldo",
+  "form_price_empty": "Nominal tidak boleh kosong",
+  "price": "Nominal",
+  "top_up": "Topup",
+  "purchase": "Pembelian",
+  "question_topup": "Apakah mau top up lagi?"
 };
 static const Map<String,dynamic> en_US = {
   "home_nav": "Home",
@@ -98,9 +104,15 @@ static const Map<String,dynamic> en_US = {
   "cancel": "Cancel",
   "search": "Search",
   "data_membership": "Data Membership",
+  "membership_detail": "Membership Detail",
   "add_member": "Add Member",
   "member_type": "Member type",
-  "balance": "Balance"
+  "balance": "Balance",
+  "form_price_empty": "Price cannot be blank",
+  "price": "Price",
+  "top_up": "Topup",
+  "purchase": "Purchase",
+  "question_topup": "Do you want to topup?"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"id_ID": id_ID, "en_US": en_US};
 }

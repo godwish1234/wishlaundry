@@ -1,0 +1,50 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get_it/get_it.dart';
+import 'package:stacked/stacked.dart';
+import 'package:wishlaundry/providers/app_state_manager.dart';
+import 'package:wishlaundry/services/interfaces/membership_service.dart';
+
+class MembershipDetailViewModel extends BaseViewModel {
+  final _appStateManager = GetIt.I<AppStateManager>();
+  final _membershipService = GetIt.I<MembershipService>();
+  DocumentSnapshot? document;
+
+  // Map<String, dynamic>? data;
+
+  Map<String, dynamic>? _data;
+  Map<String, dynamic>? get data => _data;
+
+  String docId = '';
+
+  void initialize() async {
+    setBusy(true);
+    docId = _appStateManager.docID;
+    document = await getMemberData(docId);
+
+    _data = document?.data() as Map<String, dynamic>;
+
+    notifyListeners();
+    setBusy(false);
+  }
+
+  Future getMemberData(docId) async {
+    return await _membershipService.getData(docId);
+  }
+
+  Future<void> refreshData() async {
+    document = await getMemberData(docId);
+    _data = document?.data() as Map<String, dynamic>;
+
+    notifyListeners();
+  }
+
+  Future<void> updateMemberData(
+      int balance, int price, int product, List transactions) async {
+    transactions.add(
+        {'price': price, 'product': product, 'timestamp': Timestamp.now()});
+    await _membershipService.updateMemberData(docId, balance, transactions);
+    document = await getMemberData(docId);
+    _data = document?.data() as Map<String, dynamic>;
+    notifyListeners();
+  }
+}

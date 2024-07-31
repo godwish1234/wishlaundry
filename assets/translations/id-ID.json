@@ -38,7 +38,13 @@
   "cancel": "Batal",
   "search": "Cari",
   "data_membership": "Data Membership",
+  "membership_detail": "Membership Detil",
   "add_member": "Tambah Member",
   "member_type": "Tipe member",
-  "balance": "Saldo"
+  "balance": "Saldo",
+  "form_price_empty": "Nominal tidak boleh kosong",
+  "price": "Nominal",
+  "top_up": "Topup",
+  "purchase": "Pembelian",
+  "question_topup": "Apakah mau top up lagi?"
 }

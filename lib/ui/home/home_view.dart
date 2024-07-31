@@ -768,6 +768,7 @@ class _HomeViewState extends State<HomeView> {
                             return SingleChildScrollView(
                               physics: const BouncingScrollPhysics(),
                               child: GroupedListView(
+                                  cacheExtent: 1000,
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   elements: transactionList,
