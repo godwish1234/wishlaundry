@@ -20,7 +20,7 @@ class MembershipViewModel extends BaseViewModel {
     List transactions = [];
     transactions.add({
       'price': balance,
-      'product': "isi saldo",
+      'product': 1,
       'timestamp': Timestamp.now()
     });
     await membershipService.addMember(

@@ -45,6 +45,7 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                     child: Text(LocaleKeys.add.tr()),
                     onPressed: () async {
                       await vm.updateMemberData(
+                          vm.data?['balance'],
                           vm.data?['type'] == 1
                               ? (vm.data?['balance'] + 200000)
                               : (vm.data?['balance'] + 500000),
@@ -104,6 +105,7 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         await vm.updateMemberData(
+                            vm.data?['balance'],
                             (vm.data?['balance'] -
                                 int.parse(priceController.text)),
                             int.parse(priceController.text),
@@ -188,7 +190,12 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                                                 .toList()[index]['product'] ==
                                             1
                                         ? 'Top up'
-                                        : 'Pembelian'),
+                                        : vm.data!['transactions']
+                                                        .toList()[index]
+                                                    ['product'] ==
+                                                3
+                                            ? 'Saldo sebelumnya'
+                                            : 'Pembelian'),
                                     subtitle: Text(
                                         DateFormat('dd MMM yyyy, kk:mm')
                                             .format(vm.data!['transactions']
@@ -206,7 +213,12 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                                                       ['product'] ==
                                                   1
                                               ? Colors.green
-                                              : Colors.red),
+                                              : vm.data!['transactions']
+                                                              .toList()[index]
+                                                          ['product'] ==
+                                                      3
+                                                  ? Colors.orange
+                                                  : Colors.red),
                                     ),
                                   );
                                 },

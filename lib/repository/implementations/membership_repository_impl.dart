@@ -41,8 +41,6 @@ class MembershipRepositoryImpl implements MembershipRepository {
   // UPDATE: update member
   @override
   Future<void> updateMemberData(String docID, int balance, List transactions) {
-    print(transactions);
-    // String jsonList = jsonEncode(transactions);
     return memberData
         .doc(docID)
         .update({'balance': balance, 'transactions': transactions});
