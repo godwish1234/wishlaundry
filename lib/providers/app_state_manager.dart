@@ -33,6 +33,9 @@ class AppStateManager extends ChangeNotifier {
   bool _isRefresh = false;
   bool get isRefresh => _isRefresh;
 
+  bool _hideCompleted = true;
+  bool get hideCompleted => _hideCompleted;
+
   void setLocale(Locale locale) async {
     _locale = locale;
     notifyListeners();
@@ -79,5 +82,10 @@ class AppStateManager extends ChangeNotifier {
 
   void setDocID(String docId) {
     _docID = docId;
+  }
+
+  void setShowCompleted(bool completed) {
+    _hideCompleted = completed;
+    notifyListeners();
   }
 }

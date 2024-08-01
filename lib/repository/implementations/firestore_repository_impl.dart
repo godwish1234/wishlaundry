@@ -9,7 +9,7 @@ class FirestoreRepositoryImpl implements FirestoreRepository {
   // CREATE: add a new transaction
   Future<void> addtransaction(
       String name,
-      String date,
+      Timestamp date,
       int clothesCount,
       int underpantsCount,
       int brasCount,
@@ -36,7 +36,8 @@ class FirestoreRepositoryImpl implements FirestoreRepository {
 
   // READ: get transactions from database
   @override
-  Stream<QuerySnapshot> getTransactionStream(String startDate, String endDate) {
+  Stream<QuerySnapshot> getTransactionStream(
+      Timestamp startDate, Timestamp endDate) {
     final transactionStream = transaction
         .where('date', isGreaterThanOrEqualTo: startDate)
         .where('date', isLessThanOrEqualTo: endDate)

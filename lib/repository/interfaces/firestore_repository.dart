@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 abstract class FirestoreRepository {
   Future<void> addtransaction(
       String name,
-      String date,
+      Timestamp date,
       int clothesCount,
       int underpantsCount,
       int brasCount,
       int socksCount,
       int othersCount,
       String totalCount);
-  Stream<QuerySnapshot> getTransactionStream(String startDate, String endDate);
+  Stream<QuerySnapshot> getTransactionStream(Timestamp startDate, Timestamp endDate);
   Stream<QuerySnapshot> searchStream(String searchString);
   Future<void> updatetransaction(
       String docID, int status, String step, String totalCount);

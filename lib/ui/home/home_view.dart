@@ -10,8 +10,10 @@ import 'package:wishlaundry/components/my_text_field.dart';
 import 'package:wishlaundry/constants/admins.dart';
 import 'package:wishlaundry/helpers/helper.dart';
 import 'package:wishlaundry/localizations/locale_keys.g.dart';
+import 'package:wishlaundry/providers/app_state_manager.dart';
 import 'package:wishlaundry/routing/app_link_location_keys.dart';
 import 'package:wishlaundry/services/services.dart';
+import 'package:wishlaundry/ui/components/date_helpers.dart';
 import 'package:wishlaundry/ui/components/drawer.dart';
 import 'package:wishlaundry/ui/home/home_view_model.dart';
 
@@ -44,6 +46,7 @@ class _HomeViewState extends State<HomeView> {
   final FirestoreServiceImpl firestoreService = FirestoreServiceImpl();
   static final authenticationService =
       GetIt.instance.get<AuthenticationService>();
+  final _appStateManager = GetIt.I<AppStateManager>();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -85,7 +88,7 @@ class _HomeViewState extends State<HomeView> {
       if (form!.validate()) {
         firestoreService.addtransaction(
             nameTextController.text.toUpperCase(),
-            dateTextController.text,
+            DateHelpers.convertStringToDateToTimestamp(dateTextController.text),
             int.parse(clothesTextController.text),
             underpantsTextController.text == ''
                 ? 0
@@ -291,7 +294,9 @@ class _HomeViewState extends State<HomeView> {
                               decoration: InputDecoration(
                                   labelText: LocaleKeys.date.tr()),
                               controller: TextEditingController()
-                                ..text = data['date'],
+                                ..text =
+                                    DateHelpers.convertTimestampToDateToString(
+                                        data['date']),
                               readOnly: true,
                             ),
                       TextFormField(
@@ -674,18 +679,44 @@ class _HomeViewState extends State<HomeView> {
               appBar: AppBar(
                 title: Text(LocaleKeys.home_nav.tr()),
                 actions: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        DateFormat('dd MMM yy').format(vm.selectedStartDate!),
-                        style: const TextStyle(fontSize: 12),
+                        'Sembunyikan',
+                        style: TextStyle(fontSize: 10),
                       ),
-                      Text(DateFormat('dd MMM yy').format(vm.selectedEndDate!),
-                          style: const TextStyle(fontSize: 12)),
+                      Text('Selesai', style: TextStyle(fontSize: 10)),
                     ],
                   ),
+                  IconButton(
+                      onPressed: () async {
+                        _appStateManager.setShowCompleted(
+                            _appStateManager.hideCompleted ? false : true);
+                        setState(() {});
+                      },
+                      icon: _appStateManager.hideCompleted
+                          ? const Icon(
+                              Icons.check_box,
+                              color: Colors.white,
+                            )
+                          : const Icon(
+                              Icons.check_box_outline_blank,
+                              color: Colors.white,
+                            )),
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.center,
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     Text(
+                  //       DateFormat('dd MMM yy').format(vm.selectedStartDate!),
+                  //       style: const TextStyle(fontSize: 12),
+                  //     ),
+                  //     Text(DateFormat('dd MMM yy').format(vm.selectedEndDate!),
+                  //         style: const TextStyle(fontSize: 12)),
+                  //   ],
+                  // ),
                   Padding(
                     padding: const EdgeInsets.only(right: 10),
                     child: IconButton(
@@ -749,22 +780,29 @@ class _HomeViewState extends State<HomeView> {
                   ),
                   Flexible(
                     child: StreamBuilder<QuerySnapshot>(
-                        stream: (_searchController.text != "")
-                            ? firestoreService.searchStream(
-                                _searchController.text.toUpperCase(),
-                              )
-                            : firestoreService.getTransactionStream(
-                                DateFormat('dd/MM/yyyy HH:mm')
-                                    .format(vm.selectedStartDate!),
-                                DateFormat('dd/MM/yyyy HH:mm')
-                                    .format(vm.selectedEndDate!)),
+                        stream: firestoreService.getTransactionStream(
+                            Timestamp.fromDate(vm.selectedStartDate!),
+                            Timestamp.fromDate(vm.selectedEndDate!)
+                            // DateFormat('dd/MM/yyyy HH:mm')
+                            //     .format(vm.selectedStartDate!),
+                            // DateFormat('dd/MM/yyyy HH:mm')
+                            //     .format(vm.selectedEndDate!)
+                            ),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             List transactionList = snapshot.data!.docs;
-                            transactionList.removeWhere((element) =>
-                                DateFormat("dd/MM/yyyy HH:mm")
-                                    .parse(element['date'])
-                                    .isBefore(vm.selectedStartDate!));
+
+                            if (_searchController.text != "") {
+                              transactionList.removeWhere((element) =>
+                                  !element['name'].toString().contains(
+                                      _searchController.text.toUpperCase()));
+                            }
+
+                            if (_appStateManager.hideCompleted) {
+                              transactionList.removeWhere(
+                                  (element) => element['status'] == 3);
+                            }
+
                             return SingleChildScrollView(
                               physics: const BouncingScrollPhysics(),
                               child: GroupedListView(
@@ -772,20 +810,22 @@ class _HomeViewState extends State<HomeView> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   elements: transactionList,
-                                  groupBy: (element) => DateFormat('dd/MM/yyyy')
-                                      .format(DateFormat("dd/MM/yyyy HH:mm")
-                                          .parse(element['date'])),
+                                  groupBy: (element) =>
+                                      DateHelpers.convertDateToString(
+                                          element['date'].toDate()),
+
+                                  // DateFormat('dd/MM/yyyy')
+                                  //     .format(DateFormat("dd/MM/yyyy HH:mm")
+                                  //         .parse(element['date'])),
                                   groupComparator: (value1, value2) =>
                                       value1.compareTo(value2),
                                   itemComparator: (item1, item2) =>
-                                      DateFormat('dd/MM/yyyy HH:mm')
-                                          .parse(item1['date'])
-                                          .toString()
+                                      DateHelpers.convertDateToString(
+                                              item1['date'].toDate())
                                           .compareTo(
-                                            DateFormat('dd/MM/yyyy HH:mm')
-                                                .parse(item2['date'])
-                                                .toString(),
-                                          ),
+                                        DateHelpers.convertDateToString(
+                                            item2['date'].toDate()),
+                                      ),
                                   sort: false,
                                   order: GroupedListOrder.ASC,
                                   useStickyGroupSeparators: true,
@@ -1046,10 +1086,10 @@ class _HomeViewState extends State<HomeView> {
                                               ],
                                             ),
                                           ),
-                                          subtitle: Text(DateFormat('HH:mm')
-                                              .format(
-                                                  DateFormat("dd/MM/yyyy HH:mm")
-                                                      .parse(data['date']))),
+                                          subtitle: Text(
+                                            DateHelpers.convertDateToStringTime(
+                                                data['date'].toDate()),
+                                          ),
                                           trailing: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                                 backgroundColor:
@@ -1082,6 +1122,9 @@ class _HomeViewState extends State<HomeView> {
                           }
                         }),
                   ),
+                  const SizedBox(
+                    height: 20,
+                  )
                 ],
               ));
         });

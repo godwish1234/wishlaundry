@@ -28,7 +28,7 @@ class FirestoreServiceImpl implements FirestoreService {
   @override
   Future<void> addtransaction(
       String name,
-      String date,
+      Timestamp date,
       int clothesCount,
       int underpantsCount,
       int brasCount,
@@ -40,7 +40,7 @@ class FirestoreServiceImpl implements FirestoreService {
   }
 
   @override
-  Stream<QuerySnapshot> getTransactionStream(String startDate, String endDate) {
+  Stream<QuerySnapshot> getTransactionStream(Timestamp startDate, Timestamp endDate) {
     return _firestoreRepository.getTransactionStream(startDate, endDate);
   }
 
