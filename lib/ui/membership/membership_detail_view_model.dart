@@ -39,7 +39,7 @@ class MembershipDetailViewModel extends BaseViewModel {
   }
 
   Future<void> updateMemberData(
-      int initialBalance, int topupBalance, int price, int product, List transactions, String dateCreated, String dateExpiry) async {
+      int initialBalance, int topupBalance, int price, int product, List transactions, String dateCreated, String dateExpiry, int type) async {
     if (product == 1) {
       transactions.clear();
       transactions
@@ -51,7 +51,7 @@ class MembershipDetailViewModel extends BaseViewModel {
           {'price': price, 'product': product, 'timestamp': Timestamp.now()});
     }
 
-    await _membershipService.updateMemberData(docId, topupBalance, transactions, dateCreated, dateExpiry);
+    await _membershipService.updateMemberData(docId, topupBalance, transactions, dateCreated, dateExpiry, type);
     document = await getMemberData(docId);
     _data = document?.data() as Map<String, dynamic>;
     notifyListeners();

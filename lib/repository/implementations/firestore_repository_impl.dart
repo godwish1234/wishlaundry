@@ -37,8 +37,13 @@ class FirestoreRepositoryImpl implements FirestoreRepository {
   // READ: get transactions from database
   @override
   Stream<QuerySnapshot> getTransactionStream(
-      Timestamp startDate, Timestamp endDate) {
+      Timestamp startDate, Timestamp endDate, bool hideCompleted) {
+    List status = [1, 2, 3];
+    if (hideCompleted) {
+      status = [1, 2];
+    }
     final transactionStream = transaction
+        .where('status', whereIn: status)
         .where('date', isGreaterThanOrEqualTo: startDate)
         .where('date', isLessThanOrEqualTo: endDate)
         .orderBy('date', descending: true)

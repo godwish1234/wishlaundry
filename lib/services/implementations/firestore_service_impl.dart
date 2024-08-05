@@ -40,8 +40,8 @@ class FirestoreServiceImpl implements FirestoreService {
   }
 
   @override
-  Stream<QuerySnapshot> getTransactionStream(Timestamp startDate, Timestamp endDate) {
-    return _firestoreRepository.getTransactionStream(startDate, endDate);
+  Stream<QuerySnapshot> getTransactionStream(Timestamp startDate, Timestamp endDate, bool hideCompleted) {
+    return _firestoreRepository.getTransactionStream(startDate, endDate, hideCompleted);
   }
 
   @override

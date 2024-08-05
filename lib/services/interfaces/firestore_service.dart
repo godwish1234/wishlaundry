@@ -12,7 +12,7 @@ abstract class FirestoreService {
       int socksCount,
       int othersCount,
       String totalCount);
-  Stream<QuerySnapshot> getTransactionStream(Timestamp startDate, Timestamp endDate);
+  Stream<QuerySnapshot> getTransactionStream(Timestamp startDate, Timestamp endDat, bool hideCompleted);
   Stream<QuerySnapshot> searchStream(String searchString);
   Future<void> updatetransaction(
       String docID, int status, String step, String totalCount);

@@ -35,30 +35,36 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                 actions: <Widget>[
                   TextButton(
                     // Use TextButton instead of FlatButton
-                    child: Text(LocaleKeys.cancel.tr()),
-                    onPressed: () {
+                    child: Text(LocaleKeys.silver_option.tr()),
+                    onPressed: () async {
+                      await vm.updateMemberData(
+                          vm.data?['balance'],
+                          (vm.data?['balance'] + 200000),
+                          200000,
+                          product,
+                          vm.data?['transactions'],
+                          DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
+                          DateFormat('dd/MM/yyyy HH:mm').format(
+                              DateTime.now().add(const Duration(days: 60))),
+                          1);
+
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     // Use TextButton instead of FlatButton
-                    child: Text(LocaleKeys.add.tr()),
+                    child: Text(LocaleKeys.gold_option.tr()),
                     onPressed: () async {
                       await vm.updateMemberData(
                           vm.data?['balance'],
-                          vm.data?['type'] == 1
-                              ? (vm.data?['balance'] + 200000)
-                              : (vm.data?['balance'] + 500000),
-                          vm.data?['type'] == 1 ? 200000 : 500000,
+                          (vm.data?['balance'] + 500000),
+                          500000,
                           product,
                           vm.data?['transactions'],
                           DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
-                          vm.data?['type'] == 1
-                              ? DateFormat('dd/MM/yyyy HH:mm').format(
-                                  DateTime.now().add(const Duration(days: 60)))
-                              : DateFormat('dd/MM/yyyy HH:mm').format(
-                                  DateTime.now()
-                                      .add(const Duration(days: 120))));
+                          DateFormat('dd/MM/yyyy HH:mm').format(
+                              DateTime.now().add(const Duration(days: 120))),
+                          2);
 
                       Navigator.of(context).pop();
                     },
@@ -113,6 +119,7 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                           vm.data?['transactions'],
                           vm.data?['dateCreated'],
                           vm.data?['dateExpiry'],
+                          vm.data?['type'],
                         );
 
                         Navigator.of(context).pop();
@@ -204,11 +211,10 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                                             ? 'Saldo sebelumnya'
                                             : 'Pembelian'),
                                     subtitle: Text(
-                                        DateFormat('dd MMM yyyy, kk:mm')
-                                            .format(vm.data!['transactions']
+                                        DateFormat('dd MMM yyyy, HH:mm').format(
+                                            vm.data!['transactions']
                                                 .toList()[index]['timestamp']
-                                                .toDate())
-                                            .toString()),
+                                                .toDate())),
                                     trailing: Text(
                                       'Rp. ${NumberFormat.decimalPatternDigits(
                                         locale: 'en_us',

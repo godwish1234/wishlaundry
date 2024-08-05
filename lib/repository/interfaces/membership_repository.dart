@@ -6,6 +6,6 @@ abstract class MembershipRepository {
   Future addMember(String name, int balance, int type, List transactions,
       String dateCreated, String dateExpiry);
   Future<void> delete(String docID);
-  Future<void> updateMemberData(String docID, int balance, List transaction, String dateCreated, String dateExpiry);
+  Future<void> updateMemberData(String docID, int balance, List transaction, String dateCreated, String dateExpiry, int type);
   Future<void> getData(String docID);
 }

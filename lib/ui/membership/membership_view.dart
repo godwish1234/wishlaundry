@@ -87,7 +87,7 @@ class _MembershipViewState extends State<MembershipView> {
                       validator: (value) =>
                           value == '' ? LocaleKeys.form_name_empty.tr() : null,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Row(
@@ -183,7 +183,9 @@ class _MembershipViewState extends State<MembershipView> {
                         if (snapshot.hasData) {
                           List membershipList = snapshot.data!.docs;
                           return SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
                             child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
                                 itemCount: membershipList.length,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
@@ -196,7 +198,7 @@ class _MembershipViewState extends State<MembershipView> {
                                   return Slidable(
                                     key: UniqueKey(),
                                     endActionPane: ActionPane(
-                                      motion: ScrollMotion(),
+                                      motion: const ScrollMotion(),
                                       children: [
                                         // SlidableAction(
                                         //   onPressed: (context) {
@@ -404,6 +406,9 @@ class _MembershipViewState extends State<MembershipView> {
                         }
                       }),
                 ),
+                const SizedBox(
+                  height: 20,
+                )
               ],
             ),
             floatingActionButton: FloatingActionButton(

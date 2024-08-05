@@ -46,5 +46,7 @@
   "price": "Price",
   "top_up": "Topup",
   "purchase": "Purchase",
-  "question_topup": "Do you want to topup?"
+  "question_topup": "Do you want to top up to Silver or Gold Membership?",
+  "gold_option": "Gold",
+  "silver_option": "Silver"
 }

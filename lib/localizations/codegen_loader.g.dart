@@ -62,7 +62,9 @@ class CodegenLoader extends AssetLoader{
   "price": "Nominal",
   "top_up": "Topup",
   "purchase": "Pembelian",
-  "question_topup": "Apakah mau top up lagi?"
+  "question_topup": "Apakah mau top up membership Silver atau Gold?",
+  "gold_option": "Gold",
+  "silver_option": "Silver"
 };
 static const Map<String,dynamic> en_US = {
   "home_nav": "Home",
@@ -112,7 +114,9 @@ static const Map<String,dynamic> en_US = {
   "price": "Price",
   "top_up": "Topup",
   "purchase": "Purchase",
-  "question_topup": "Do you want to topup?"
+  "question_topup": "Do you want to top up to Silver or Gold Membership?",
+  "gold_option": "Gold",
+  "silver_option": "Silver"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"id_ID": id_ID, "en_US": en_US};
 }

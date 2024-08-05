@@ -47,7 +47,7 @@ class _ScaffoldViewState extends State<ScaffoldView>
         return Scaffold(
             key: _scaffoldKey,
             backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-            body: IndexedStack(index: vm.currentNavIndex, children: children),
+            body: children[vm.currentNavIndex],
             bottomNavigationBar: _bottomNavigationBar(vm));
       },
     );

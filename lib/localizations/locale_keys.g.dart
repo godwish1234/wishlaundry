@@ -49,5 +49,7 @@ abstract class  LocaleKeys {
   static const top_up = 'top_up';
   static const purchase = 'purchase';
   static const question_topup = 'question_topup';
+  static const gold_option = 'gold_option';
+  static const silver_option = 'silver_option';
 
 }

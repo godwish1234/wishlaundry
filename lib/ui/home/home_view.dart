@@ -782,7 +782,9 @@ class _HomeViewState extends State<HomeView> {
                     child: StreamBuilder<QuerySnapshot>(
                         stream: firestoreService.getTransactionStream(
                             Timestamp.fromDate(vm.selectedStartDate!),
-                            Timestamp.fromDate(vm.selectedEndDate!)
+                            Timestamp.fromDate(vm.selectedEndDate!),
+                            _appStateManager.hideCompleted
+
                             // DateFormat('dd/MM/yyyy HH:mm')
                             //     .format(vm.selectedStartDate!),
                             // DateFormat('dd/MM/yyyy HH:mm')
@@ -798,25 +800,15 @@ class _HomeViewState extends State<HomeView> {
                                       _searchController.text.toUpperCase()));
                             }
 
-                            if (_appStateManager.hideCompleted) {
-                              transactionList.removeWhere(
-                                  (element) => element['status'] == 3);
-                            }
-
                             return SingleChildScrollView(
                               physics: const BouncingScrollPhysics(),
                               child: GroupedListView(
-                                  cacheExtent: 1000,
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   elements: transactionList,
                                   groupBy: (element) =>
                                       DateHelpers.convertDateToString(
                                           element['date'].toDate()),
-
-                                  // DateFormat('dd/MM/yyyy')
-                                  //     .format(DateFormat("dd/MM/yyyy HH:mm")
-                                  //         .parse(element['date'])),
                                   groupComparator: (value1, value2) =>
                                       value1.compareTo(value2),
                                   itemComparator: (item1, item2) =>

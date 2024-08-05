@@ -46,5 +46,7 @@
   "price": "Nominal",
   "top_up": "Topup",
   "purchase": "Pembelian",
-  "question_topup": "Apakah mau top up lagi?"
+  "question_topup": "Apakah mau top up membership Silver atau Gold?",
+  "gold_option": "Gold",
+  "silver_option": "Silver"
 }

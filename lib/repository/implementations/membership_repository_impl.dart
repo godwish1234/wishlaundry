@@ -41,12 +41,13 @@ class MembershipRepositoryImpl implements MembershipRepository {
   // UPDATE: update member
   @override
   Future<void> updateMemberData(String docID, int balance, List transactions,
-      String dateCreated, String dateExpiry) {
+      String dateCreated, String dateExpiry, int type) {
     return memberData.doc(docID).update({
       'balance': balance,
       'transactions': transactions,
       'dateCreated': dateCreated,
-      'dateExpiry': dateExpiry
+      'dateExpiry': dateExpiry,
+      'type': type
     });
   }
 
