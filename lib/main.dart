@@ -14,7 +14,6 @@ import 'package:wishlaundry/localizations/codegen_loader.g.dart';
 import 'package:wishlaundry/providers/app_state_manager.dart';
 import 'package:wishlaundry/routing/app_route_parser.dart';
 import 'package:wishlaundry/routing/app_router.dart';
-import 'package:wishlaundry/services/implementations/notification_service_impl.dart';
 
 import 'providers/interfaces/user_settings_provider.dart';
 import 'services/interfaces/authentication_service.dart';

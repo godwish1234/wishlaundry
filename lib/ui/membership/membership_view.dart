@@ -7,10 +7,8 @@ import 'package:stacked/stacked.dart';
 import 'package:wishlaundry/components/my_text_field.dart';
 import 'package:wishlaundry/constants/admins.dart';
 import 'package:wishlaundry/localizations/locale_keys.g.dart';
-import 'package:wishlaundry/providers/app_state_manager.dart';
 import 'package:wishlaundry/services/services.dart';
 import 'package:wishlaundry/ui/components/drawer.dart';
-import 'package:wishlaundry/ui/membership/membership_detail_view.dart';
 import 'package:wishlaundry/ui/membership/membership_view_model.dart';
 
 class MembershipView extends StatefulWidget {
@@ -27,7 +25,7 @@ class _MembershipViewState extends State<MembershipView> {
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController nameTextController = TextEditingController();
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -185,7 +183,7 @@ class _MembershipViewState extends State<MembershipView> {
                           return SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
                             child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: membershipList.length,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
@@ -355,48 +353,27 @@ class _MembershipViewState extends State<MembershipView> {
                                         ),
                                       ],
                                     ),
-                                    child: InkWell(
+                                    child: ListTile(
                                       onTap: () {
                                         vm.onListClicked(docID);
                                       },
-                                      child: Container(
-                                        child: ListTile(
-                                          // onTap: () {
-                                          //   opentransactionBox(
-                                          //       docId: docID,
-                                          //       data: data,
-                                          //       username: vm.user?.email?.substring(
-                                          //           0,
-                                          //           vm.user?.email?.indexOf('@')));
-                                          // },
-                                          title: Text(data['name']),
-                                          subtitle: Text(
-                                              '${LocaleKeys.balance.tr()}: Rp. ${NumberFormat.decimalPatternDigits(
-                                            locale: 'en_us',
-                                            decimalDigits: 0,
-                                          ).format(data['balance'])}'),
-                                          trailing: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      data['type'] == 1
-                                                          ? Colors.grey
-                                                          : Colors
-                                                              .orangeAccent),
-                                              onPressed: () async {
-                                                vm.onListClicked(docID);
-                                                // await vm.updateMemberData(
-                                                //   docID,
-                                                //   data['balance'] - 10000,
-                                                //   10000,
-                                                //   'cuci setrika',
-                                                //   data['transaction'] ?? [],
-                                                // );
-                                              },
-                                              child: Text(data['type'] == 1
-                                                  ? "SILVER"
-                                                  : 'GOLD')),
-                                        ),
-                                      ),
+                                      title: Text(data['name']),
+                                      subtitle: Text(
+                                          '${LocaleKeys.balance.tr()}: Rp. ${NumberFormat.decimalPatternDigits(
+                                        locale: 'en_us',
+                                        decimalDigits: 0,
+                                      ).format(data['balance'])}'),
+                                      trailing: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: data['type'] == 1
+                                                  ? Colors.grey
+                                                  : Colors.orangeAccent),
+                                          onPressed: () async {
+                                            vm.onListClicked(docID);
+                                          },
+                                          child: Text(data['type'] == 1
+                                              ? "SILVER"
+                                              : 'GOLD')),
                                     ),
                                   );
                                 }),

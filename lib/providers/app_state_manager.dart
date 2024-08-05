@@ -30,9 +30,6 @@ class AppStateManager extends ChangeNotifier {
   Locale _locale = const Locale("id");
   Locale get locale => _locale;
 
-  bool _isRefresh = false;
-  bool get isRefresh => _isRefresh;
-
   bool _hideCompleted = true;
   bool get hideCompleted => _hideCompleted;
 

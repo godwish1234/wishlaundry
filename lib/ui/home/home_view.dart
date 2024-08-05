@@ -48,7 +48,7 @@ class _HomeViewState extends State<HomeView> {
       GetIt.instance.get<AuthenticationService>();
   final _appStateManager = GetIt.I<AppStateManager>();
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   int? attempts;
 
@@ -253,7 +253,7 @@ class _HomeViewState extends State<HomeView> {
                                   labelText: LocaleKeys.date.tr()),
                               controller: dateTextController,
                               onTap: () async {
-                                final DateTime? picked = await showDatePicker(
+                                await showDatePicker(
                                         context: context,
                                         cancelText: 'cancel',
                                         confirmText: 'ok',

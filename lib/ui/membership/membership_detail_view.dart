@@ -20,7 +20,7 @@ class MembershipDetailView extends StatefulWidget {
 }
 
 class _MembershipDetailViewState extends State<MembershipDetailView> {
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController priceController = TextEditingController();
 
   void openDialog(MembershipDetailViewModel vm, int product) {
@@ -37,36 +37,39 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                     // Use TextButton instead of FlatButton
                     child: Text(LocaleKeys.silver_option.tr()),
                     onPressed: () async {
-                      await vm.updateMemberData(
-                          vm.data?['balance'],
-                          (vm.data?['balance'] + 200000),
-                          200000,
-                          product,
-                          vm.data?['transactions'],
-                          DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
-                          DateFormat('dd/MM/yyyy HH:mm').format(
-                              DateTime.now().add(const Duration(days: 60))),
-                          1);
-
-                      Navigator.of(context).pop();
+                      await vm
+                          .updateMemberData(
+                              vm.data?['balance'],
+                              (vm.data?['balance'] + 200000),
+                              200000,
+                              product,
+                              vm.data?['transactions'],
+                              DateFormat('dd/MM/yyyy HH:mm')
+                                  .format(DateTime.now()),
+                              DateFormat('dd/MM/yyyy HH:mm').format(
+                                  DateTime.now().add(const Duration(days: 60))),
+                              1)
+                          .then((value) => Navigator.of(context).pop());
                     },
                   ),
                   TextButton(
                     // Use TextButton instead of FlatButton
                     child: Text(LocaleKeys.gold_option.tr()),
                     onPressed: () async {
-                      await vm.updateMemberData(
-                          vm.data?['balance'],
-                          (vm.data?['balance'] + 500000),
-                          500000,
-                          product,
-                          vm.data?['transactions'],
-                          DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
-                          DateFormat('dd/MM/yyyy HH:mm').format(
-                              DateTime.now().add(const Duration(days: 120))),
-                          2);
-
-                      Navigator.of(context).pop();
+                      await vm
+                          .updateMemberData(
+                              vm.data?['balance'],
+                              (vm.data?['balance'] + 500000),
+                              500000,
+                              product,
+                              vm.data?['transactions'],
+                              DateFormat('dd/MM/yyyy HH:mm')
+                                  .format(DateTime.now()),
+                              DateFormat('dd/MM/yyyy HH:mm').format(
+                                  DateTime.now()
+                                      .add(const Duration(days: 120))),
+                              2)
+                          .then((value) => Navigator.of(context).pop());
                     },
                   ),
                 ],
@@ -110,19 +113,19 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                     child: Text(LocaleKeys.add.tr()),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        await vm.updateMemberData(
-                          vm.data?['balance'],
-                          (vm.data?['balance'] -
-                              int.parse(priceController.text)),
-                          int.parse(priceController.text),
-                          product,
-                          vm.data?['transactions'],
-                          vm.data?['dateCreated'],
-                          vm.data?['dateExpiry'],
-                          vm.data?['type'],
-                        );
-
-                        Navigator.of(context).pop();
+                        await vm
+                            .updateMemberData(
+                              vm.data?['balance'],
+                              (vm.data?['balance'] -
+                                  int.parse(priceController.text)),
+                              int.parse(priceController.text),
+                              product,
+                              vm.data?['transactions'],
+                              vm.data?['dateCreated'],
+                              vm.data?['dateExpiry'],
+                              vm.data?['type'],
+                            )
+                            .then((value) => Navigator.of(context).pop());
                       }
                     },
                   ),
@@ -253,7 +256,7 @@ Widget gradientCardSample(MembershipDetailViewModel vm) {
     decoration: BoxDecoration(
       gradient: LinearGradient(
         colors: vm.data?['type'] == 1
-            ? [Color(0xffd4d4d4), Color(0xffa6a6a6)]
+            ? [const Color(0xffd4d4d4), const Color(0xffa6a6a6)]
             : [
                 Colors.yellow,
                 Colors.orangeAccent,
@@ -277,7 +280,7 @@ Widget gradientCardSample(MembershipDetailViewModel vm) {
                     vm.data?['type'] == 1
                         ? 'Silver Membership'
                         : 'Gold Membership',
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.black)), // Adds a title to the card
                 const Spacer(),
                 Stack(
@@ -296,7 +299,7 @@ Widget gradientCardSample(MembershipDetailViewModel vm) {
               ],
             ),
             Text(vm.data?['name'],
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black)) // Adds a subtitle to the card
           ],
         ),
@@ -308,10 +311,10 @@ Widget gradientCardSample(MembershipDetailViewModel vm) {
                   locale: 'en_us',
                   decimalDigits: 0,
                 ).format(vm.data?['balance']),
-                style: TextStyle(fontSize: 24, color: Colors.black)),
+                style: const TextStyle(fontSize: 24, color: Colors.black)),
             Text(
               'EXP: ${DateFormat('dd/MM/yyyy').format(DateFormat("dd/MM/yyyy").parse(vm.data?['dateExpiry']))}',
-              style: TextStyle(fontSize: 12, color: Colors.black),
+              style: const TextStyle(fontSize: 12, color: Colors.black),
             ),
           ],
         ) // Adds a price to the bottom of the card

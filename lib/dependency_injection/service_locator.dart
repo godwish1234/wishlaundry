@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import 'package:wishlaundry/providers/app_state_manager.dart';
