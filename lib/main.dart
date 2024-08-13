@@ -122,6 +122,8 @@ class _WishLaundryState extends State<WishLaundry> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    ColorScheme appColors = ColorScheme.fromSeed(seedColor: Color(0xFF0b39a7));
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => _appStateManager),
@@ -142,6 +144,13 @@ class _WishLaundryState extends State<WishLaundry> with WidgetsBindingObserver {
               scaffoldMessengerKey: _scaffoldMessengerStateKey,
               title: "Wish Laundry POS",
               themeMode: value.mode,
+              theme: ThemeData(
+                // useMaterial3: true,
+                colorScheme: appColors, //<--this
+                textTheme: TextTheme(
+                    titleLarge:
+                        TextStyle(color: appColors.primary)), //<--and this
+              ),
               backButtonDispatcher: RootBackButtonDispatcher(),
               supportedLocales: context.supportedLocales,
               debugShowCheckedModeBanner: false,

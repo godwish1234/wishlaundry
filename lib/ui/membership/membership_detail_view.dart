@@ -214,7 +214,7 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                                             ? 'Saldo sebelumnya'
                                             : 'Pembelian'),
                                     subtitle: Text(
-                                        DateFormat('dd MMM yyyy, HH:mm').format(
+                                        DateFormat('dd MMM yyyy').format(
                                             vm.data!['transactions']
                                                 .toList()[index]['timestamp']
                                                 .toDate())),

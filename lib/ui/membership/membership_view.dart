@@ -354,27 +354,39 @@ class _MembershipViewState extends State<MembershipView> {
                                       ],
                                     ),
                                     child: ListTile(
-                                      onTap: () {
-                                        vm.onListClicked(docID);
-                                      },
-                                      title: Text(data['name']),
-                                      subtitle: Text(
-                                          '${LocaleKeys.balance.tr()}: Rp. ${NumberFormat.decimalPatternDigits(
-                                        locale: 'en_us',
-                                        decimalDigits: 0,
-                                      ).format(data['balance'])}'),
-                                      trailing: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor: data['type'] == 1
-                                                  ? Colors.grey
-                                                  : Colors.orangeAccent),
-                                          onPressed: () async {
-                                            vm.onListClicked(docID);
-                                          },
-                                          child: Text(data['type'] == 1
-                                              ? "SILVER"
-                                              : 'GOLD')),
-                                    ),
+                                        onTap: () {
+                                          vm.onListClicked(docID);
+                                        },
+                                        title: Text(data['name']),
+                                        subtitle: Text(
+                                            '${LocaleKeys.balance.tr()}: Rp. ${NumberFormat.decimalPatternDigits(
+                                          locale: 'en_us',
+                                          decimalDigits: 0,
+                                        ).format(data['balance'])}'),
+                                        trailing: DateFormat("dd/MM/yyyy")
+                                                .parse(data['dateExpiry'])
+                                                .isAfter(DateTime.now())
+                                            ? ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        data['type'] == 1
+                                                            ? Colors.grey
+                                                            : Colors
+                                                                .orangeAccent),
+                                                onPressed: () async {
+                                                  vm.onListClicked(docID);
+                                                },
+                                                child: Text(data['type'] == 1
+                                                    ? "SILVER"
+                                                    : 'GOLD'))
+                                            : ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.redAccent),
+                                                onPressed: () async {
+                                                  vm.onListClicked(docID);
+                                                },
+                                                child: const Text('EXPIRED'))),
                                   );
                                 }),
                           );
