@@ -213,13 +213,12 @@ class _MembershipDetailViewState extends State<MembershipDetailView> {
                                                 3
                                             ? 'Saldo sebelumnya'
                                             : 'Pembelian'),
-                                    subtitle: Text(
-                                        DateFormat('dd MMM yyyy').format(
-                                            vm.data!['transactions']
-                                                .toList()[index]['timestamp']
-                                                .toDate())),
+                                    subtitle: Text(DateFormat('dd MMM yyyy')
+                                        .format(vm.data!['transactions']
+                                            .toList()[index]['timestamp']
+                                            .toDate())),
                                     trailing: Text(
-                                      'Rp. ${NumberFormat.decimalPatternDigits(
+                                      '${vm.data!['transactions'].toList()[index]['product'] == 1 ? '+ ' : vm.data!['transactions'].toList()[index]['product'] == 2 ? '- ' : ''}Rp. ${NumberFormat.decimalPatternDigits(
                                         locale: 'en_us',
                                         decimalDigits: 0,
                                       ).format(vm.data!['transactions'].toList()[index]['price'])}',
