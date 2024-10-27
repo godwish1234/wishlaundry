@@ -40,8 +40,10 @@ class FirestoreServiceImpl implements FirestoreService {
   }
 
   @override
-  Stream<QuerySnapshot> getTransactionStream(Timestamp startDate, Timestamp endDate, bool hideCompleted) {
-    return _firestoreRepository.getTransactionStream(startDate, endDate, hideCompleted);
+  Stream<QuerySnapshot> getTransactionStream(
+      Timestamp startDate, Timestamp endDate, bool hideCompleted) {
+    return _firestoreRepository.getTransactionStream(
+        startDate, endDate, hideCompleted);
   }
 
   @override
@@ -52,34 +54,53 @@ class FirestoreServiceImpl implements FirestoreService {
   // UPDATE: update transactions
   @override
   Future<void> updatetransaction(
-      String docID, int status, String step, String totalCount) {
+    String docID,
+    int status,
+    String step,
+    String totalCount, {
+    String? selectedShelf,
+    int? packCount,
+  }) {
+    if (status != 3) {
+      return _firestoreRepository.updatetransaction(
+          docID, status, step, totalCount);
+    }
     return _firestoreRepository.updatetransaction(
-        docID, status, step, totalCount);
+        docID, status, step, totalCount,
+        selectedShelf: selectedShelf, packCount: packCount);
   }
 
   @override
   Future<void> forceUpdate(
-      String docID,
-      int status,
-      String step,
-      int clothesCount,
-      int underpantsCount,
-      int brasCount,
-      int socksCount,
-      int othersCount,
-      String totalCount,
-      int bypass) {
-    return _firestoreRepository.forceUpdate(
-        docID,
-        status,
-        step,
-        clothesCount,
-        underpantsCount,
-        brasCount,
-        socksCount,
-        othersCount,
-        totalCount,
-        bypass);
+    String docID,
+    int status,
+    String step,
+    int clothesCount,
+    int underpantsCount,
+    int brasCount,
+    int socksCount,
+    int othersCount,
+    String totalCount,
+    int bypass, {
+    String? selectedShelf,
+    int? packCount,
+  }) {
+    if (status != 3) {
+      return _firestoreRepository.forceUpdate(
+          docID,
+          status,
+          step,
+          clothesCount,
+          underpantsCount,
+          brasCount,
+          socksCount,
+          othersCount,
+          totalCount,
+          bypass);  
+    }
+    return _firestoreRepository.forceUpdate(docID, status, step, clothesCount,
+        underpantsCount, brasCount, socksCount, othersCount, totalCount, bypass,
+        packCount: packCount, selectedShelf: selectedShelf);
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +43,8 @@ class _HomeViewState extends State<HomeView> {
   final TextEditingController othersTextController = TextEditingController();
 
   final TextEditingController _searchController = TextEditingController();
+  String? _selectedShelf;
+  TextEditingController _packsController = TextEditingController();
 
   // firestore
   final FirestoreServiceImpl firestoreService = FirestoreServiceImpl();
@@ -77,11 +81,12 @@ class _HomeViewState extends State<HomeView> {
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
+    _packsController.dispose();
     super.dispose();
   }
 
   void validateAndSave(String? docId, Map<String, dynamic>? data,
-      String? username, int? bypass) {
+      String? username, int? bypass) async {
     final form = _formKey.currentState;
 
     if (docId == null) {
@@ -135,27 +140,32 @@ class _HomeViewState extends State<HomeView> {
             Navigator.pop(context);
             break;
           case 2:
-            firestoreService.forceUpdate(
-                docId,
-                3,
-                'pack',
-                int.parse(clothesTextController.text),
-                underpantsTextController.text == ''
-                    ? 0
-                    : int.parse(underpantsTextController.text),
-                brasTextController.text == ''
-                    ? 0
-                    : int.parse(brasTextController.text),
-                socksTextController.text == ''
-                    ? 0
-                    : int.parse(socksTextController.text),
-                othersTextController.text == ''
-                    ? 0
-                    : int.parse(othersTextController.text),
-                '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}',
-                bypass ?? 0);
             Navigator.pop(context);
-            // getClientStream();
+            await _showInputDialog().then((value) {
+              if (value == true) {
+                firestoreService.forceUpdate(
+                    docId,
+                    3,
+                    'pack',
+                    int.parse(clothesTextController.text),
+                    underpantsTextController.text == ''
+                        ? 0
+                        : int.parse(underpantsTextController.text),
+                    brasTextController.text == ''
+                        ? 0
+                        : int.parse(brasTextController.text),
+                    socksTextController.text == ''
+                        ? 0
+                        : int.parse(socksTextController.text),
+                    othersTextController.text == ''
+                        ? 0
+                        : int.parse(othersTextController.text),
+                    '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}',
+                    bypass ?? 0,
+                    packCount: int.parse(_packsController.text),
+                    selectedShelf: _selectedShelf);
+              }
+            });
             break;
         }
       } else {
@@ -168,9 +178,16 @@ class _HomeViewState extends State<HomeView> {
               // getClientStream();
               break;
             case 2:
-              firestoreService.updatetransaction(docId, 3, 'pack',
-                  '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}');
               Navigator.pop(context);
+              await _showInputDialog().then((value) {
+                if (value == true) {
+                  firestoreService.updatetransaction(docId, 3, 'pack',
+                      '$username menghitung ${clothesTextController.text} baju/celana${underpantsTextController.text != '' ? ',${underpantsTextController.text} CD' : ''} ${brasTextController.text != '' ? ', ${brasTextController.text} BH' : ''} ${socksTextController.text != '' ? ', ${socksTextController.text} KK' : ''} ${othersTextController.text != '' ? ', ${othersTextController.text} lainnya' : ''}',
+                      packCount: int.parse(_packsController.text),
+                      selectedShelf: _selectedShelf);
+                }
+              });
+
               // getClientStream();
               break;
           }
@@ -605,6 +622,7 @@ class _HomeViewState extends State<HomeView> {
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.redAccent),
                                       onPressed: () {
+                                        Navigator.pop(context);
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
@@ -618,7 +636,6 @@ class _HomeViewState extends State<HomeView> {
                                                   onPressed: () {
                                                     validateAndSave(docId, data,
                                                         username, 1);
-                                                    Navigator.pop(context);
                                                   },
                                                 ),
                                                 TextButton(
@@ -626,7 +643,6 @@ class _HomeViewState extends State<HomeView> {
                                                   onPressed: () {
                                                     validateAndSave(docId, data,
                                                         username, 2);
-                                                    Navigator.pop(context);
                                                   },
                                                 ),
                                               ],
@@ -665,6 +681,64 @@ class _HomeViewState extends State<HomeView> {
           ),
         ],
       ),
+    );
+  }
+
+  Future _showInputDialog() {
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing when clicking outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Segera packing sekarang\ndan isi dibawah'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(labelText: 'Shelf Number'),
+                value: _selectedShelf,
+                items: ['A', 'B', 'C', 'D', 'E', 'F']
+                    .map((shelf) => DropdownMenuItem(
+                          value: shelf,
+                          child: Text(shelf),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedShelf = value;
+                  });
+                },
+              ),
+              TextField(
+                controller: _packsController,
+                decoration: InputDecoration(labelText: 'Jumlah pack'),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (_selectedShelf != null &&
+                    _packsController.text.isNotEmpty) {
+                  Navigator.of(context).pop(true); // Close dialog
+                  // Handle input data here
+                  print('Shelf Number: $_selectedShelf');
+                  print('Number of Packs: ${_packsController.text}');
+                } else {
+                  // Notify the user to fill all fields if they are empty
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(
+                            'Please select a shelf and enter the number of packs')),
+                  );
+                }
+              },
+              child: Text('Continue'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -1102,8 +1176,12 @@ class _HomeViewState extends State<HomeView> {
                                                           vm.user?.email
                                                               ?.indexOf('@')));
                                             },
-                                            child: Text(Helper()
-                                                .convertStatus(data['status'])),
+                                            child: data['status'] != 3
+                                                ? Text(Helper().convertStatus(
+                                                    data['status']))
+                                                : Text(Helper().convertStatus(
+                                                        data['status']) +
+                                                    ': ${data['packCount']} pack, Lemari ${data['selectedShelf']}'),
                                           ),
                                         ),
                                       ),

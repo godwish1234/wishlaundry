@@ -10,10 +10,17 @@ abstract class FirestoreRepository {
       int socksCount,
       int othersCount,
       String totalCount);
-  Stream<QuerySnapshot> getTransactionStream(Timestamp startDate, Timestamp endDate, bool hideCompleted);
+  Stream<QuerySnapshot> getTransactionStream(
+      Timestamp startDate, Timestamp endDate, bool hideCompleted);
   Stream<QuerySnapshot> searchStream(String searchString);
   Future<void> updatetransaction(
-      String docID, int status, String step, String totalCount);
+    String docID,
+    int status,
+    String step,
+    String totalCount, {
+    String? selectedShelf,
+    int? packCount,
+  });
   Future<void> forceUpdate(
       String docID,
       int status,
@@ -24,7 +31,10 @@ abstract class FirestoreRepository {
       int socksCount,
       int othersCount,
       String totalCount,
-      int bypass);
+      int bypass, {
+    String? selectedShelf,
+    int? packCount,
+  });
   Future<void> updatetransactionIncorrectInput(String docID, int attempt);
   Future<void> delete(String docID);
 }

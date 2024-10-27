@@ -96,7 +96,7 @@ class WishLaundry extends StatefulWidget {
   State<StatefulWidget> createState() => _WishLaundryState();
 }
 
-class _WishLaundryState extends State<WishLaundry> with WidgetsBindingObserver {
+class _WishLaundryState extends State<WishLaundry> {
   final _scaffoldMessengerStateKey = GlobalKey<ScaffoldMessengerState>();
   final _routeParser = AppRouteParser();
   late AppRouter _appRouter;

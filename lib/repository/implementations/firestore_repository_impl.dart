@@ -65,7 +65,13 @@ class FirestoreRepositoryImpl implements FirestoreRepository {
   // UPDATE: update transactions
   @override
   Future<void> updatetransaction(
-      String docID, int status, String step, String totalCount) {
+    String docID,
+    int status,
+    String step,
+    String totalCount, {
+    String? selectedShelf,
+    int? packCount,
+  }) {
     return transaction.doc(docID).update({
       'status': status,
       'timestamp': Timestamp.now(),
@@ -73,22 +79,27 @@ class FirestoreRepositoryImpl implements FirestoreRepository {
         'count': totalCount,
         'timestamp': Timestamp.now(),
       },
-      'attempt': 2
+      'attempt': 2,
+      'selectedShelf': selectedShelf,
+      'packCount': packCount
     });
   }
 
   @override
   Future<void> forceUpdate(
-      String docID,
-      int status,
-      String step,
-      int clothesCount,
-      int underpantsCount,
-      int brasCount,
-      int socksCount,
-      int othersCount,
-      String totalCount,
-      int bypass) {
+    String docID,
+    int status,
+    String step,
+    int clothesCount,
+    int underpantsCount,
+    int brasCount,
+    int socksCount,
+    int othersCount,
+    String totalCount,
+    int bypass, {
+    String? selectedShelf,
+    int? packCount,
+  }) {
     return transaction.doc(docID).update({
       'clothesCount': clothesCount,
       'underpantsCount': underpantsCount,
@@ -102,7 +113,9 @@ class FirestoreRepositoryImpl implements FirestoreRepository {
         'timestamp': Timestamp.now(),
       },
       'bypass': bypass,
-      'attempt': 2
+      'attempt': 2,
+      'selectedShelf': selectedShelf,
+      'packCount': packCount
     });
   }
 
