@@ -28,6 +28,7 @@ class FirestoreServiceImpl implements FirestoreService {
   @override
   Future<void> addtransaction(
       String name,
+      String type,
       Timestamp date,
       int clothesCount,
       int underpantsCount,
@@ -35,7 +36,7 @@ class FirestoreServiceImpl implements FirestoreService {
       int socksCount,
       int othersCount,
       String totalCount) {
-    return _firestoreRepository.addtransaction(name, date, clothesCount,
+    return _firestoreRepository.addtransaction(name, type, date, clothesCount,
         underpantsCount, brasCount, socksCount, othersCount, totalCount);
   }
 
@@ -106,6 +107,16 @@ class FirestoreServiceImpl implements FirestoreService {
   @override
   Future<void> updatetransactionIncorrectInput(String docID, int attempt) {
     return _firestoreRepository.updatetransactionIncorrectInput(docID, attempt);
+  }
+
+   @override
+  Future<void> updateShelfInfo(String docID, String selectedShelf, int packCount) {
+    return _firestoreRepository.updateShelfInfo(docID, selectedShelf, packCount);
+  }
+
+   @override
+  Future<void> updateDatePicked(String docID, Timestamp datePicked) {
+    return _firestoreRepository.updateDatePicked(docID, datePicked);
   }
 
   @override

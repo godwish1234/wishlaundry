@@ -9,6 +9,7 @@ class FirestoreRepositoryImpl implements FirestoreRepository {
   // CREATE: add a new transaction
   Future<void> addtransaction(
       String name,
+      String type,
       Timestamp date,
       int clothesCount,
       int underpantsCount,
@@ -18,6 +19,7 @@ class FirestoreRepositoryImpl implements FirestoreRepository {
       String totalCount) {
     return transaction.add({
       'name': name,
+      'type': type,
       'date': date,
       'status': 1,
       'clothesCount': clothesCount,
@@ -121,9 +123,20 @@ class FirestoreRepositoryImpl implements FirestoreRepository {
 
   @override
   Future<void> updatetransactionIncorrectInput(String docID, int attempt) {
-    return transaction.doc(docID).update({
-      'attempt': attempt,
-    });
+    return transaction.doc(docID).update({"attempt": attempt});
+  }
+
+  @override
+  Future<void> updateShelfInfo(
+      String docID, String selectedShelf, int packCount) {
+    return transaction
+        .doc(docID)
+        .update({"selectedShelf": selectedShelf, "packCount": packCount});
+  }
+
+  @override
+  Future<void> updateDatePicked(String docID, Timestamp datePicked) {
+    return transaction.doc(docID).update({"datePicked": datePicked});
   }
 
   @override

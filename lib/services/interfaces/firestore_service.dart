@@ -5,6 +5,7 @@ abstract class FirestoreService {
   Future<FirebaseApp> initializeFirebase();
   Future<void> addtransaction(
       String name,
+      String type,
       Timestamp date,
       int clothesCount,
       int underpantsCount,
@@ -38,5 +39,8 @@ abstract class FirestoreService {
     int? packCount,
   });
   Future<void> updatetransactionIncorrectInput(String docID, int attempt);
+  Future<void> updateShelfInfo(
+      String docID, String selectedShelf, int packCount);
+  Future<void> updateDatePicked(String docID, Timestamp datePicked);
   Future<void> delete(String docID);
 }
