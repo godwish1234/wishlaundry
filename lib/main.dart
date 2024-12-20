@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ void main() {
         await EasyLocalization.ensureInitialized();
         await Firebase.initializeApp(
             options: DefaultFirebaseOptions.currentPlatform);
+
         // final notificationService = NotificationServiceImpl();
         // await notificationService.listenNotifications();
 
@@ -145,7 +147,7 @@ class _WishLaundryState extends State<WishLaundry> {
               title: "Wish Laundry POS",
               themeMode: value.mode,
               theme: ThemeData(
-                // useMaterial3: true,
+                useMaterial3: false,
                 colorScheme: appColors, //<--this
                 textTheme: TextTheme(
                     titleLarge:

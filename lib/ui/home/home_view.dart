@@ -1320,29 +1320,29 @@ class _HomeViewState extends State<HomeView> {
                                               ],
                                             ),
                                           ),
-                                          subtitle: RichText(
-                                            text: TextSpan(
-                                              style: DefaultTextStyle.of(
-                                                      context)
-                                                  .style, // Base style for the text
-                                              children: [
-                                                TextSpan(
-                                                  text: DateHelpers
-                                                      .convertDateToStringTime(
-                                                          data['date']
-                                                              .toDate()),
-                                                ),
-                                                data['datePicked'] != null
-                                                    ? TextSpan(
-                                                        text:
-                                                            ' - diambil ${DateHelpers.convertDateToString(data['datePicked'].toDate())}',
+                                          subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                DateHelpers
+                                                    .convertDateToStringTime(
+                                                        data['date'].toDate()),
+                                              ),
+                                              data['datePicked'] != null
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 10.0),
+                                                      child: Text(
+                                                        'Diambil ${DateHelpers.convertDateToString(data['datePicked'].toDate())}',
                                                         style: const TextStyle(
                                                             color: Colors
                                                                 .red), // Red color for specific text
-                                                      )
-                                                    : const TextSpan()
-                                              ],
-                                            ),
+                                                      ),
+                                                    )
+                                                  : Container()
+                                            ],
                                           ),
                                           trailing: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
